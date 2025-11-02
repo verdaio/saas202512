@@ -59,6 +59,20 @@ dist/
 build/
 *.pdf
 
+# Generated Artifacts
+# Policy: Do NOT commit generated documents to avoid bloat and merge conflicts
+# For PR reviews: Take screenshots of generated output instead
+*.docx
+*.xlsx
+*.pptx
+# Exception: If your project requires committing generated docs, remove above lines
+
+# Database
+*.sqlite
+*.db
+# Exception: Allow SQLite files in .config/ for project tracking
+!.config/*.db
+
 # Archives
 *.zip
 *.tar.gz

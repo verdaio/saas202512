@@ -445,7 +445,10 @@ Time Off:
 
 ## Launch Readiness Tasks
 
+**Reference:** See `docs/TESTING-GUIDE.md` for comprehensive testing procedures
+
 ### Testing
+- [ ] **Smoke tests pass** (backend health, frontend build, docker compose config)
 - [ ] End-to-end booking flow tested (10+ test bookings)
 - [ ] Multi-tenant isolation verified (create 3 test tenants, verify no data leaks)
 - [ ] Payment processing tested (deposits, full payments, refunds)
@@ -454,6 +457,10 @@ Time Off:
 - [ ] Vaccination blocking tested (expired vax cannot book)
 - [ ] Cancellation fees tested (various time windows)
 - [ ] Load testing (1000+ appointments, 100+ concurrent users)
+- [ ] **Docker diagnostics:** `docker compose ps` shows all services running
+- [ ] **Docker logs clean:** `docker compose logs | grep -i error` shows no critical errors
+- [ ] All unit tests pass with >90% coverage
+- [ ] All integration tests pass
 
 ### Monitoring & Alerts
 - [ ] Error tracking configured (Sentry or similar)
@@ -471,12 +478,22 @@ Time Off:
 - [ ] SMS opt-in compliance documented
 
 ### Security
+
+**Reference:** See `docs/SECURITY.md` for comprehensive security guidelines
+
 - [ ] Security audit (OWASP top 10)
 - [ ] Penetration testing (basic)
 - [ ] SSL certificates configured
-- [ ] Environment secrets secured
+- [ ] **Secrets in Key Vault** (no secrets in code, .env, or parameters.*.json)
+- [ ] Environment secrets secured (production uses Azure Key Vault)
+- [ ] Multi-tenant data isolation verified (no cross-tenant data leaks)
+- [ ] SQL injection prevention verified (parameterized queries)
+- [ ] XSS prevention verified (input sanitization)
+- [ ] CSRF protection enabled
+- [ ] Rate limiting configured (login, API endpoints)
 - [ ] Database backups automated
 - [ ] Disaster recovery plan documented
+- [ ] Incident response plan documented
 
 ---
 
@@ -518,6 +535,14 @@ Sprint 6 is successful if:
 
 ## Links & References
 
+**Sprint Planning:**
 - Roadmap: `product/roadmap/2025-Q1-roadmap.md`
+- Q1 OKRs: `business/okrs/2025-Q1-okrs.md`
 - Beta Launch Checklist: (to be created)
 - Training Materials: (to be created)
+
+**Developer Resources:**
+- Developer Guide: `docs/Developer-Guide.md` - Setup, Docker diagnostics, troubleshooting
+- Testing Guide: `docs/TESTING-GUIDE.md` - Smoke tests, PR checklist, coverage goals
+- Security Guidelines: `docs/SECURITY.md` - Secrets management, multi-tenant security, incident response
+- Contributing Guide: `docs/CONTRIBUTING.md` - File naming, commits, PRs, documentation standards

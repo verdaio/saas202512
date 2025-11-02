@@ -25,6 +25,11 @@ This sprint sets the architectural foundation for all future features. Success m
 **Capacity:** ~60-70 hours (solo founder, 6-7 hours/day)
 **Commitments/Time Off:** None
 
+**Prerequisites:** Before starting this sprint, review:
+- `docs/Developer-Guide.md` - Environment setup and tooling requirements
+- `docs/CONTRIBUTING.md` - File naming and code style guidelines
+- `docs/SECURITY.md` - Secrets management and multi-tenant security
+
 ---
 
 ## Sprint Backlog
@@ -566,11 +571,21 @@ Document any stories added or removed during the sprint:
 
 ## Links & References
 
-- Related PRD: (To be created during sprint)
+**Sprint Planning:**
 - Roadmap: `product/roadmap/2025-Q1-roadmap.md`
+- Related PRD: (To be created during sprint)
+- GitHub milestone: (To be created)
+
+**Technical Documentation:**
 - Database Schema Doc: `technical/architecture/database-schema.md` (to be created)
 - Multi-Tenant Architecture Guide: `technical/multi-tenant-architecture.md`
-- GitHub milestone: (To be created)
+- ADR Template: `technical/adr-template.md` (create ADRs for major architectural decisions)
+
+**Developer Resources:**
+- Developer Guide: `docs/Developer-Guide.md` - Setup, Docker, tooling
+- Contributing Guide: `docs/CONTRIBUTING.md` - Style, commits, PRs
+- Security Guidelines: `docs/SECURITY.md` - Secrets management, multi-tenant security
+- Testing Guide: `docs/TESTING-GUIDE.md` - Unit tests, smoke tests, coverage
 
 ---
 
