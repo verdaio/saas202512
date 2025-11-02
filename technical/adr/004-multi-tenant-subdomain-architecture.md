@@ -1,6 +1,6 @@
 # ADR-004: Multi-Tenant Subdomain Architecture
 
-**Date:** 2025-01-06
+**Date:** 2025-11-02
 **Status:** Accepted
 **Deciders:** Chris Stephens
 **Technical Story:** Core architectural decision - How tenants are isolated and accessed

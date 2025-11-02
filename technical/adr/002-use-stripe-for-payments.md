@@ -1,6 +1,6 @@
 # ADR-002: Use Stripe for Payment Processing
 
-**Date:** 2025-01-06
+**Date:** 2025-11-02
 **Status:** Accepted
 **Deciders:** Chris Stephens
 **Technical Story:** Core MVP requirement - No-show defense requires deposits and card-on-file

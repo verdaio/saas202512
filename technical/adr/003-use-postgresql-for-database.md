@@ -1,6 +1,6 @@
 # ADR-003: Use PostgreSQL for Primary Database
 
-**Date:** 2025-01-06
+**Date:** 2025-11-02
 **Status:** Accepted
 **Deciders:** Chris Stephens
 **Technical Story:** Core MVP requirement - Multi-tenant data isolation with relational data model

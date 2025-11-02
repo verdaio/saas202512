@@ -1,6 +1,6 @@
 # ADR-001: Use Twilio for SMS Communication
 
-**Date:** 2025-01-06
+**Date:** 2025-11-02
 **Status:** Accepted
 **Deciders:** Chris Stephens
 **Technical Story:** Core MVP requirement - SMS-first workflows are a key product differentiator
