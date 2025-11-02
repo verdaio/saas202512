@@ -1,506 +1,386 @@
-# Planning Template Repository
+# Pet Care Scheduler
 
-A comprehensive planning and documentation template for SaaS projects, especially designed for solo founders and small teams. This repository provides structure, templates, and best practices for every stage of product planning and development.
+**Trade Name:** Pet Care
+**Project ID:** saas202512
+**Status:** Planning Complete - Ready for Sprint 1
+**Build Approach:** Complete Build (60-90 days)
+**Architecture:** Multi-tenant SaaS (subdomain model)
 
----
-
-## 🎯 What This Is
-
-This is a **ready-to-use folder structure and template library** for planning and building SaaS products. It includes:
-
-- **Product planning templates** (PRDs, roadmaps, feature specs)
-- **Sprint planning workflows** (user stories, retrospectives)
-- **Technical documentation** (architecture decisions, tech specs, API docs)
-- **Business planning** (OKRs, metrics, goals)
-- **Meeting templates** (customer interviews, brainstorms)
-- **Process documentation** (runbooks, workflows, SOPs)
-
-**Perfect for:** Solo founders, small teams, and anyone who wants organized, professional planning without starting from scratch.
+A specialized scheduling platform for mobile groomers, solo trainers, and small pet care salons. Solving the critical pain points of double-booking chaos, no-show losses, and manual vaccination tracking.
 
 ---
 
-## 📁 Repository Structure
+## 🎯 Product Vision
 
-```
-.
-├── product/              # Product requirements, roadmaps, features
-│   ├── PRDs/            # Product Requirements Documents
-│   ├── roadmap/         # Product roadmap planning
-│   ├── features/        # Feature specifications
-│   ├── strategy/        # Product strategy docs
-│   └── examples/        # Example: User onboarding PRD
-│
-├── sprints/             # Sprint planning and agile workflows
-│   ├── current/         # Active sprint
-│   ├── archive/         # Past sprints
-│   ├── user-stories/    # User story backlog
-│   ├── retrospectives/  # Sprint retrospectives
-│   └── examples/        # Example: Completed Sprint 1
-│
-├── technical/           # Technical specs and architecture
-│   ├── architecture/    # System design docs
-│   ├── specs/           # Technical specifications
-│   ├── adr/             # Architecture Decision Records
-│   ├── infrastructure/  # DevOps and infrastructure
-│   ├── api/             # API documentation
-│   └── examples/        # Example: PostgreSQL ADR
-│
-├── business/            # Business planning and metrics
-│   ├── okrs/            # Objectives and Key Results
-│   ├── goals/           # Annual/quarterly goals
-│   ├── metrics/         # KPI tracking
-│   ├── milestones/      # Launch planning
-│   └── strategy/        # Business strategy
-│
-├── meetings/            # Meeting notes and conversations
-│   ├── customer-calls/  # Customer interviews
-│   ├── advisor-meetings/ # Advisor/investor meetings
-│   ├── team/            # Team meetings
-│   ├── brainstorms/     # Brainstorming sessions
-│   └── general/         # Other meetings
-│
-├── workflows/           # Process documentation
-│   ├── development/     # Dev workflows
-│   ├── operations/      # Operational runbooks
-│   ├── business/        # Business processes
-│   └── examples/        # Example: Deployment workflow
-│
-├── scripts/             # Utility scripts
-│   ├── install-pandoc.ps1  # Install Pandoc for document conversion
-│   ├── convert-to-docx.bat # Convert markdown to Word documents
-│   └── README.md        # Scripts documentation
-│
-├── .github/             # GitHub templates
-│   ├── ISSUE_TEMPLATE/  # Feature, bug, task templates
-│   └── PULL_REQUEST_TEMPLATE.md
-│
-├── .gitignore           # Comprehensive exclusions
-├── .editorconfig        # Editor configuration
-├── CLAUDE.md            # Guidance for Claude Code
-└── README.md            # This file
-```
+**The Problem:**
+Pet care professionals lose revenue to no-shows (8-15% industry average), struggle with double-booking, and waste time on manual vaccination tracking and phone confirmations.
+
+**Our Solution:**
+SMS-first scheduling platform with "impossible to double-book" safeguards, automated vaccination lifecycle management, and two-tap rescheduling workflows.
+
+**Target Market:**
+- **Primary:** Mobile groomers, solo trainers (wedge market)
+- **Secondary:** Small salons (1-3 tables), boutiques with classes/packages
+
+---
+
+## ⭐ Key Differentiators
+
+1. **"Impossible to Double-Book" Scheduling Engine**
+   - Resource locking at database level
+   - Buffer time enforcement (setup, cleanup, travel)
+   - Real-time conflict detection
+   - Multi-pet appointment handling
+
+2. **SMS-First Workflows**
+   - Two-way messaging inbox
+   - Two-tap reschedule ("Reply 1 for tomorrow 2pm")
+   - Late-running alerts
+   - Automated confirmations & reminders (24hr + 2hr)
+
+3. **Vaccination Lifecycle Management**
+   - Upload vax cards (photo/PDF)
+   - Auto-expiry tracking with reminders
+   - Booking blocks for expired vaccinations
+   - Staff override workflow with documentation
+
+4. **No-Show Prevention**
+   - Card-on-file requirement
+   - Deposit system with cancellation policies
+   - Automatic fee charging
+   - Waitlist autofill on cancellations
+
+5. **60-Minute Migration**
+   - Guided onboarding wizard
+   - CSV import from existing tools
+   - Weekend migration support
+   - 2-week parallel mode option
 
 ---
 
 ## 🚀 Quick Start
 
-### 1. Use This Template
+### Prerequisites
 
-**Option A: Clone for your project**
+- **Docker Desktop** with Compose v2 (required)
+- **Node.js** LTS (20.x+)
+- **Python** 3.11+
+- **Git** 2.x+
+
+### Initial Setup
+
 ```bash
-git clone <this-repo-url> your-project-name
-cd your-project-name
-rm -rf .git
-git init
+# 1. Clone repository
+git clone https://github.com/ChrisStephens1971/saas202512.git
+cd saas202512
+
+# 2. Read the developer guide
+cat docs/DEVELOPER-GUIDE.md
+
+# 3. Set up environment variables
+cp backend/.env.example backend/.env
+cp frontend/.env.example frontend/.env
+
+# Edit .env files with your API keys (Twilio, Stripe)
+
+# 4. Start services
+docker compose up -d
+
+# 5. Run database migrations
+cd backend
+source venv/bin/activate  # Windows: .\venv\Scripts\Activate.ps1
+alembic upgrade head
+
+# 6. Access the application
+# Frontend: http://localhost:3012
+# Backend API: http://localhost:8012
+# API Docs: http://localhost:8012/docs
 ```
 
-**Option B: Fork on GitHub**
-- Click "Use this template" or "Fork"
-- Clone your fork
-- Customize for your needs
-
-### 2. Remove What You Don't Need
-
-**For solo founders (minimal setup):**
-- Keep: `product/`, `sprints/`, `business/metrics/`
-- Optional: `technical/`, `meetings/`, `workflows/`
-- Can remove: Other subdirectories
-
-**For small teams:**
-- Keep most folders
-- Customize templates to match your workflow
-
-**For enterprise:**
-- Use everything
-- Add company-specific sections
-
-### 3. Start Planning
-
-**Day 1:**
-- [ ] Create your first roadmap (`product/roadmap-template.md`)
-- [ ] Set up Sprint 1 (`sprints/sprint-plan-template.md`)
-- [ ] Define initial OKRs (`business/okr-template.md`)
-
-**Week 1:**
-- [ ] Write PRD for first feature
-- [ ] Break down into user stories
-- [ ] Start tracking metrics
-
-**Ongoing:**
-- [ ] Weekly sprint planning and retrospectives
-- [ ] Monthly roadmap updates
-- [ ] Quarterly OKR reviews
+**Full setup instructions:** See `docs/DEVELOPER-GUIDE.md`
 
 ---
 
-## 📝 Available Templates
+## 📁 Project Structure
 
-### Product Planning (product/)
-- **prd-template.md** - Comprehensive Product Requirements Document
-- **roadmap-template.md** - Product roadmap planning (Now/Next/Later)
-- **feature-spec-template.md** - Lightweight feature specification
-- **user-research-template.md** - User research and feedback documentation
-
-### Sprint Planning (sprints/)
-- **sprint-plan-template.md** - Sprint planning with daily progress tracking
-- **user-story-template.md** - Individual user story format
-- **retrospective-template.md** - Sprint retrospective structure
-- **daily-standup-template.md** - Daily standup notes (optional)
-
-### Technical (technical/)
-- **tech-spec-template.md** - Detailed technical specification
-- **adr-template.md** - Architecture Decision Record (ADR)
-- **api-spec-template.md** - API endpoint documentation
-- **incident-postmortem-template.md** - Postmortem analysis
-- **system-design-template.md** - High-level system design
-
-### Business (business/)
-- **okr-template.md** - Quarterly OKR planning
-- **metrics-dashboard-template.md** - KPI tracking dashboard
-- **weekly-review-template.md** - Weekly business review
-- **annual-goals-template.md** - Yearly goal setting
-- **milestone-plan-template.md** - Launch and milestone planning
-
-### Meetings (meetings/)
-- **meeting-notes-template.md** - General meeting notes
-- **customer-interview-template.md** - Customer discovery calls
-- **1-on-1-template.md** - One-on-one meeting format
-- **brainstorm-template.md** - Structured brainstorming
-- **decision-meeting-template.md** - Decision-making meetings
-
-### Workflows (workflows/)
-- **process-documentation-template.md** - Document any process
-- **runbook-template.md** - Operational runbook for systems
-- **checklist-template.md** - Reusable checklists
-- **sop-template.md** - Standard Operating Procedure
+```
+saas202512/
+├── docs/                    # Developer documentation
+│   ├── DEVELOPER-GUIDE.md  # Setup, Docker, tooling, troubleshooting
+│   ├── CONTRIBUTING.md     # Code style, commits, PRs
+│   ├── TESTING-GUIDE.md    # Testing procedures, smoke tests
+│   └── SECURITY.md         # Secrets management, multi-tenant security
+│
+├── product/                 # Product planning
+│   ├── roadmap/
+│   │   └── 2025-Q1-roadmap.md   # Complete build roadmap
+│   └── PRDs/               # Product requirements (to be created)
+│
+├── sprints/                 # Sprint plans
+│   └── current/
+│       ├── sprint-01-foundation.md
+│       ├── sprint-02-scheduling-engine.md
+│       ├── sprint-03-booking-payments.md
+│       ├── sprint-04-vaccination-no-show-defense.md
+│       ├── sprint-05-sms-workflows.md
+│       └── sprint-06-ops-tools-reports.md
+│
+├── business/                # Business planning
+│   └── okrs/
+│       └── 2025-Q1-okrs.md  # Build & beta validation OKRs
+│
+├── technical/               # Technical documentation
+│   ├── multi-tenant-architecture.md
+│   ├── adr-template.md     # For architectural decisions
+│   └── infrastructure/     # Deployment guides
+│
+├── backend/                 # FastAPI backend (to be created)
+├── frontend/                # Next.js frontend (to be created)
+└── project-brief.md         # Full viability summary
+```
 
 ---
 
-## 💡 How to Use These Templates
+## 🏗️ Build Timeline
 
-### For Solo Founders
+**Approach:** Complete Build (ship all 6 MVP areas before beta)
+**Duration:** 60-90 days (12 weeks)
+**Target Launch:** March 28, 2025 (Week 12)
+**Beta Goal:** 20 shops by March 31, 2025
 
-**Essential Workflow:**
-1. **Product:** Write simple PRDs or feature specs
-2. **Sprints:** Track work in 1-2 week sprints
-3. **Business:** Weekly reviews + quarterly OKRs
-4. **Technical:** Document major decisions (ADRs)
+### Sprint Breakdown
 
-**Time Investment:**
-- Planning: 2-4 hours/week
-- Retrospectives: 1 hour/week
-- Reviews: 30 min/week
+| Sprint | Duration | Focus Area | Key Deliverables |
+|--------|----------|------------|------------------|
+| **Sprint 1** | Weeks 1-2 | Foundation | Multi-tenant DB, core models, auth |
+| **Sprint 2** | Weeks 3-4 | Scheduling Engine | Conflict detection, buffer management |
+| **Sprint 3** | Weeks 5-6 | Booking & Payments | Widget, Stripe, SMS reminders |
+| **Sprint 4** | Weeks 7-8 | Vaccination & No-Show | Vax tracking, cancellation policies |
+| **Sprint 5** | Weeks 9-10 | SMS Workflows | Two-way inbox, quick actions |
+| **Sprint 6** | Weeks 11-12 | Ops & Reports | Dashboard, photos, beta onboarding |
 
-**You don't need to use everything!** Start with 20% of the templates and add more as needed.
-
-### For Small Teams (2-5 people)
-
-**Team Workflow:**
-1. **Weekly:** Sprint planning, retrospectives
-2. **Bi-weekly:** Roadmap reviews
-3. **Monthly:** OKR check-ins
-4. **Quarterly:** Goal setting, strategy reviews
-
-**Collaboration:**
-- Share templates via GitHub/Notion/Confluence
-- Assign owners to each document
-- Review together during meetings
-
-### For Larger Teams
-
-**Full Implementation:**
-- Use all folders and templates
-- Integrate with tools (Jira, Linear, Notion)
-- Establish review processes
-- Create team-specific variations
+**Current Sprint:** Sprint 1 - Foundation (not yet started)
 
 ---
 
-## ✨ Key Features
+## 🎯 Q1 2025 Goals (OKRs)
 
-### 1. Complete Examples
-Every major template has a filled-in example:
-- `product/examples/example-prd-user-onboarding.md`
-- `sprints/examples/example-sprint-1.md`
-- `technical/examples/example-adr-use-postgresql.md`
-- `workflows/examples/example-deployment-workflow.md`
+### Objective 1: Ship Production-Ready MVP
+- ✅ Complete all 6 sprint deliverables on schedule
+- ✅ Zero critical bugs before beta launch
+- ✅ 99.5%+ uptime in production
 
-### 2. GitHub Integration
-Ready-to-use GitHub templates:
-- Feature request template
-- Bug report template
-- Task template
-- Pull request template
+### Objective 2: Launch Successful Beta Program
+- ✅ Enroll 20 beta shops by March 31
+- ✅ 60% activation rate (12 active shops)
+- ✅ <60 minute average migration time
 
-### 3. Best Practices Built-In
-Templates include:
-- Section prompts and examples
-- Decision frameworks
-- Common pitfalls to avoid
-- Metrics and success criteria
+### Objective 3: Validate Core Product Hypotheses
+- ✅ Reduce no-shows by ≥30% vs. baseline
+- ✅ 70%+ booking confirmation rate via SMS
+- ✅ Zero double-bookings reported in beta
 
-### 4. Customizable
-Every template can be:
-- Simplified (remove sections)
-- Expanded (add fields)
-- Adapted (industry-specific)
-- Integrated (link to external tools)
+**Full OKRs:** See `business/okrs/2025-Q1-okrs.md`
 
 ---
 
-## 🎯 Best Practices
+## 💻 Tech Stack
 
-### Documentation
+### Frontend
+- **Framework:** Next.js 14+ (React)
+- **Language:** TypeScript
+- **Styling:** Tailwind CSS
+- **UI Components:** shadcn/ui
+- **State Management:** React Query
 
-**✅ Do:**
-- Update docs as you go (not after)
-- Document "why" not just "what"
-- Link related documents
-- Use examples to clarify
-- Keep it scannable (headings, bullets, tables)
+### Backend
+- **Framework:** FastAPI (Python 3.11+)
+- **ORM:** SQLAlchemy 2.0
+- **Migrations:** Alembic
+- **Authentication:** JWT
+- **API Docs:** OpenAPI/Swagger (auto-generated)
 
-**❌ Don't:**
-- Over-document (80% done > perfect)
-- Let docs go stale
-- Write docs no one reads
-- Copy-paste without customizing
+### Database & Storage
+- **Database:** PostgreSQL 15+
+- **Cache:** Redis 7+
+- **File Storage:** S3 / Azure Blob (tenant-prefixed)
 
-### Planning
+### Integrations
+- **SMS:** Twilio (with A2P/10DLC registration)
+- **Payments:** Stripe (Connect for multi-tenant)
+- **Email:** SendGrid (fallback to SMS)
 
-**✅ Do:**
-- Start simple, add complexity as needed
-- Review retrospectives and adjust
-- Be honest about timelines
-- Celebrate wins
-- Keep the customer at the center
-
-**❌ Don't:**
-- Overthink (paralysis by analysis)
-- Ignore retrospective insights
-- Commit to unrealistic deadlines
-- Plan in isolation
-
-### Process
-
-**✅ Do:**
-- Document processes you repeat
-- Automate where possible
-- Review quarterly
-- Make it easy to follow
-
-**❌ Don't:**
-- Create unnecessary bureaucracy
-- Make processes too rigid
-- Skip retrospectives
-- Ignore pain points
+### Infrastructure
+- **Containerization:** Docker Compose v2
+- **Hosting:** TBD (AWS/Azure/Heroku)
+- **CI/CD:** GitHub Actions
+- **Monitoring:** Sentry (errors), UptimeRobot (uptime)
+- **Secrets:** Azure Key Vault (production)
 
 ---
 
-## 🔧 Customization Guide
+## 📊 Success Metrics
 
-### Simplify for MVPs
-1. Remove folders you don't need
-2. Use "lite" versions of templates
-3. Combine similar documents
-4. Focus on essentials only
+**Target Metrics (Post-Beta):**
 
-### Expand for Enterprise
-1. Add compliance sections (SOC 2, HIPAA, etc.)
-2. Include approval workflows
-3. Add company-specific fields
-4. Create detailed runbooks
+| Metric | Target | Current |
+|--------|--------|---------|
+| No-show reduction | ≥30% | TBD |
+| Booking completion | ≥70% | TBD |
+| Utilization increase | +10-15% | TBD |
+| Monthly churn | <2% | TBD |
+| Payback period | <3 months | TBD |
 
-### Industry-Specific Additions
-
-**Healthcare/Medical:**
-- HIPAA compliance checkboxes
-- PHI handling sections
-- Audit trail requirements
-- Clinical validation docs
-
-**Fintech:**
-- PCI-DSS requirements
-- AML/KYC procedures
-- Regulatory filing tracking
-- Risk assessment templates
-
-**EdTech:**
-- FERPA compliance
-- COPPA considerations
-- Accessibility (WCAG) checklist
-- Pedagogical approach docs
+**Unit Economics (Targets):**
+- ARPU: $80-120/mo
+- Gross margin: 80-85%
+- CAC: $150-300
+- LTV: ≈$2,400 (24 months at $99/mo)
 
 ---
 
-## 📚 Real-World Examples
+## 🔒 Security & Compliance
 
-### Example 1: Solo Founder Journey
+**Multi-Tenant Security:**
+- Row-level security (RLS) in PostgreSQL
+- Tenant ID on all queries (no cross-tenant data access)
+- Subdomain-based tenant resolution
+- Tenant-prefixed file storage
 
-**Week 1:**
-- Created initial roadmap with 3 features
-- Defined Q1 OKRs
-- Set up Sprint 1
+**Secrets Management:**
+- Development: `.env` files (never committed)
+- Production: Azure Key Vault
+- NO secrets in `parameters.*.json` files
+- Managed Identity for Key Vault access
 
-**Week 4:**
-- Completed Sprint 1, held retrospective
-- Updated roadmap based on learnings
-- Wrote PRD for feature 2
+**Compliance:**
+- **PCI DSS:** Stripe Elements (never handle raw card data)
+- **A2P/10DLC:** SMS registration for reliable delivery
+- **TCPA:** Opt-in required, STOP/START handling
+- **Data Privacy:** Encryption at rest and in transit
 
-**Month 3:**
-- Launched MVP
-- Started tracking metrics
-- Customer interview notes in `meetings/`
+**See:** `docs/SECURITY.md` for comprehensive guidelines
 
-**Result:** Organized planning led to faster shipping and better focus.
+---
 
-### Example 2: 3-Person Team
+## 🧪 Testing
 
-**Initial Setup:**
-- Customized templates for team workflow
-- Set up 2-week sprint cadence
-- Integrated with Linear for task tracking
+**Testing Strategy:**
 
-**Ongoing:**
-- Weekly sprint planning (1 hour)
-- Daily async updates in sprint doc
-- Bi-weekly retrospectives
-- Monthly roadmap reviews
+| Type | Coverage Target | Run Frequency |
+|------|----------------|---------------|
+| **Unit Tests** | 90%+ | Every PR |
+| **Integration Tests** | 85%+ | Every PR |
+| **E2E Tests** | Critical paths | Pre-deployment |
+| **Smoke Tests** | All services | Every commit |
 
-**Result:** Clear communication, less confusion, better alignment.
+**Smoke Test Commands:**
+```bash
+# Backend health
+curl http://localhost:8012/health
+
+# Docker services
+docker compose ps
+
+# Run test suite
+pytest  # Backend
+npm test  # Frontend
+
+# Validate infrastructure
+docker compose config
+```
+
+**See:** `docs/TESTING-GUIDE.md` for full testing procedures
+
+---
+
+## 📖 Documentation
+
+### For Developers
+- **Setup & Environment:** `docs/DEVELOPER-GUIDE.md`
+- **Code Style & PRs:** `docs/CONTRIBUTING.md`
+- **Testing Procedures:** `docs/TESTING-GUIDE.md`
+- **Security Guidelines:** `docs/SECURITY.md`
+
+### For Planning
+- **Product Roadmap:** `product/roadmap/2025-Q1-roadmap.md`
+- **Sprint Plans:** `sprints/current/sprint-*.md` (1-6)
+- **OKRs:** `business/okrs/2025-Q1-okrs.md`
+- **Project Brief:** `project-brief.md`
+
+### For Architecture
+- **Multi-Tenant Guide:** `technical/multi-tenant-architecture.md`
+- **ADR Template:** `technical/adr-template.md`
+- **Infrastructure:** `technical/infrastructure/`
 
 ---
 
 ## 🤝 Contributing
 
-Have improvements? Found a better template format? Want to add examples?
+**Before submitting a PR:**
 
-**Welcome contributions:**
-- Additional templates
-- Industry-specific variations
-- Better examples
-- Clarifications and improvements
+1. ✅ Read `docs/CONTRIBUTING.md` (file naming, code style)
+2. ✅ Follow conventional commits format
+3. ✅ Run smoke tests and full test suite
+4. ✅ Update documentation if needed
+5. ✅ No secrets in code or config files
+6. ✅ Include screenshots for UI changes
 
-**How to contribute:**
-1. Fork this repository
-2. Make your changes
-3. Submit a pull request
-4. Explain the value
+**PR Checklist:** See `docs/TESTING-GUIDE.md`
 
 ---
 
-## 📖 Recommended Resources
+## 🚦 Project Status
 
-### Product Management
-- [The Mom Test](http://momtestbook.com/) - Rob Fitzpatrick
-- [Inspired](https://svpg.com/inspired-how-to-create-products-customers-love/) - Marty Cagan
-- [Shape Up](https://basecamp.com/shapeup) - Basecamp
+**Current Phase:** Planning Complete ✅
+**Next Step:** Start Sprint 1 - Foundation
+**Team:** Solo founder (Chris Stephens)
 
-### Agile & Sprint Planning
-- [Scrum Guide](https://scrumguides.org/)
-- [User Story Mapping](https://www.jpattonassociates.com/user-story-mapping/) - Jeff Patton
-
-### Technical Documentation
-- [Architecture Decision Records](https://adr.github.io/)
-- [Google SRE Books](https://sre.google/books/)
-- [Documenting APIs](https://swagger.io/resources/articles/documenting-apis/)
-
-### For Solo Founders
-- [Indie Hackers](https://www.indiehackers.com/)
-- [MicroConf](https://microconf.com/)
-- [Zero to Sold](https://thebootstrappedfounder.com/zero-to-sold/) - Arvid Kahl
+**Progress:**
+- [x] Project brief created (from viability summary)
+- [x] Q1 roadmap complete (all 6 MVP areas)
+- [x] Sprint plans created (Sprint 1-6)
+- [x] OKRs defined (build & beta validation)
+- [x] Developer documentation complete
+- [ ] Sprint 1: Not started (infrastructure setup)
+- [ ] Sprint 2-6: Pending
 
 ---
 
-## 🏗️ Solo Founder Essentials
+## 🔗 Links
 
-**You're building alone? Here's what to focus on:**
+- **Repository:** https://github.com/ChrisStephens1971/saas202512
+- **Viability Summary:** `project-brief.md`
+- **Product Roadmap:** `product/roadmap/2025-Q1-roadmap.md`
+- **OKRs:** `business/okrs/2025-Q1-okrs.md`
 
-### Must Have (Start here)
-1. ✅ Basic roadmap (`product/roadmap-template.md`)
-2. ✅ Sprint tracking (`sprints/sprint-plan-template.md`)
-3. ✅ Weekly review habit (`business/weekly-review-template.md`)
-4. ✅ Metrics dashboard (`business/metrics-dashboard-template.md`)
+---
 
-### Should Have (Add soon)
-5. ⚡ Retrospectives (learn & improve)
-6. ⚡ PRDs for major features
-7. ⚡ ADRs for big decisions
-8. ⚡ Customer interview notes
+## 📞 Contact
 
-### Nice to Have (Eventually)
-9. 💎 Detailed tech specs
-10. 💎 Comprehensive runbooks
-11. 💎 Full OKR system
-
-**Remember:**
-- Shipping > Perfect planning
-- Document enough to stay organized
-- Simplicity > comprehensiveness
-- Progress > perfection
-
-**You've got this!** 🚀
+**Project Owner:** Chris Stephens
+**Email:** chris.stephens@verdaio.com
+**Organization:** Verdaio
 
 ---
 
 ## ⚖️ License
 
-This template is released under the **MIT License**. Use it however you want for your projects!
-
----
-
-## 💬 Support
-
-**Questions or Issues?**
-- Open an issue in this repository
-- Submit improvements via PR
-- Share how you're using these templates
+This project is private and proprietary.
 
 ---
 
 ## 🎉 Acknowledgments
 
-**Created by:** Claude Code (claude.ai/code)
+**Built with:**
+- Template system by Verdaio
+- Planning assistance by Claude Code (claude.ai/code)
 
 **Inspired by:**
-- Basecamp's Shape Up methodology
-- Amazon's PR/FAQ process
-- Google's Design Doc template
-- Architecture Decision Records (ADRs)
-- Agile/Scrum best practices
-- Indie Hacker community
-
-**Built for:** Solo founders and small teams who want to build great products with professional planning—without the overhead.
+- Real pain points from pet care professionals
+- SMS-first approach from modern consumer apps
+- Best practices from Stripe, Twilio, and SaaS leaders
 
 ---
 
-## 📊 Quick Reference
-
-### Time Estimates (Solo Founder)
-
-| Activity | Weekly | Monthly | Quarterly |
-|----------|--------|---------|-----------|
-| Sprint Planning | 1-2 hrs | - | - |
-| Retrospective | 1 hr | - | - |
-| Weekly Review | 30 min | - | - |
-| Roadmap Update | - | 2 hrs | - |
-| OKR Planning | - | - | 4 hrs |
-| Metrics Review | 15 min | 30 min | 1 hr |
-
-**Total:** ~3-4 hours/week for organized planning
-
-### Template Popularity (Most Used)
-
-1. ⭐⭐⭐⭐⭐ Sprint plan
-2. ⭐⭐⭐⭐⭐ Weekly review
-3. ⭐⭐⭐⭐ Roadmap
-4. ⭐⭐⭐⭐ User story
-5. ⭐⭐⭐⭐ Retrospective
-6. ⭐⭐⭐ PRD
-7. ⭐⭐⭐ Metrics dashboard
-8. ⭐⭐⭐ OKRs
-
----
-
-**Happy Planning! 🎯**
-
-*Now go build something amazing.*
+**Let's build something pet care professionals will love!** 🐾🚀
