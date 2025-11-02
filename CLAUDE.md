@@ -23,6 +23,39 @@ This file provides guidance to Claude Code (claude.ai/code) when working with th
 
 ---
 
+## 📖 Essential Project Guides
+
+**Before starting any work, familiarize yourself with these guides:**
+
+| Guide | Purpose | Reference When |
+|-------|---------|----------------|
+| **docs/DEVELOPER-GUIDE.md** | Tooling requirements, Docker setup, diagnostics | Setting up environment, troubleshooting infrastructure |
+| **docs/CONTRIBUTING.md** | File naming, code style, formatting standards | Creating files, writing code, naming conventions |
+| **docs/TESTING-GUIDE.md** | Pre-commit checks, smoke tests, validation | Before commits, before deployment |
+| **.gitignore** | What gets committed vs ignored | Understanding generated files policy |
+
+**Key Standards:**
+- **Tooling:** Node.js 20+, Python 3.11+, Docker Compose v2+ (see docs/DEVELOPER-GUIDE.md)
+- **File Naming:** Varies by directory - UPPER-KEBAB for quick-reference/, Title Case for docs/ (see docs/CONTRIBUTING.md)
+- **Generated Files:** Do NOT commit .docx/.xlsx/.pptx, use screenshots in PRs (see .gitignore comments)
+- **Code Style:** Follow `C:\devop\coding_standards.md` - 2-space indentation for JS/YAML/JSON, camelCase for JS, snake_case for Python
+- **Testing:** Run smoke tests before commits (see docs/TESTING-GUIDE.md)
+
+**Quick Diagnostics:**
+```bash
+# Validate Docker Compose changes
+docker compose config
+
+# Check service health
+docker compose ps
+docker compose logs -f [service]
+
+# Pre-commit validation
+npm run lint && npm test && npm run build
+```
+
+---
+
 ## 🏢 Multi-Tenant Architecture
 
 **Multi-Tenant Enabled:** true
@@ -45,7 +78,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with th
 ## 🎯 IMPORTANT: First-Time Project Detection
 
 **Project ID:** saas202512
-**Created:** 2025-11-02
+**Created:** 2025-01-06
 **Status:** active
 
 ### First Time Opening This Project?
@@ -854,13 +887,20 @@ If push fails:
 
 ## 🔗 Additional Resources
 
-All detailed guides are in `.config/`:
+**Essential Project Guides (in project root):**
+- **docs/DEVELOPER-GUIDE.md** - Tooling requirements, Docker setup, infrastructure diagnostics
+- **docs/CONTRIBUTING.md** - File naming conventions, code style, formatting standards
+- **docs/TESTING-GUIDE.md** - Pre-commit checks, smoke tests, deployment validation
+- **.gitignore** - Generated files policy (see comments at top)
+- **C:\devop\coding_standards.md** - Comprehensive coding standards (Google Style Guides)
+
+**Integration Guides (in `.config/`):**
 - **claude-code-templates-guide.md** - Claude Code Templates (recommended for development)
 - **recommended-claude-skills.md** - Claude Skills setup and workflows
 - **INTEGRATIONS.md** - Complete integration guide
 - **claudepro-directory-guide.md** - ClaudePro.directory reference
 
-Advanced specialists:
+**Advanced Specialists:**
 - **docs/advanced/SPECIALIZED-TOOLS.md** - Framework specialists, payments, AI features
 
 **Project tracking:**
@@ -880,4 +920,4 @@ Advanced specialists:
 ---
 
 **Template Version:** 1.0
-**Last Updated:** 2025-11-02
+**Last Updated:** 2025-01-06
