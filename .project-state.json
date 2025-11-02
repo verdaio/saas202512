@@ -4,14 +4,15 @@
   "templateType": "standard",
   "version": "2.0",
   "state": {
-    "hasGreeted": false,
-    "setupComplete": false,
-    "currentSprint": null,
-    "phase": "planning"
+    "hasGreeted": true,
+    "setupComplete": true,
+    "currentSprint": "sprint-01-foundation",
+    "phase": "ready-to-build"
   },
   "metadata": {
-    "tradeName": null,
-    "teamType": null,
+    "tradeName": "Pet Care",
+    "teamType": "solo",
+    "buildApproach": "complete-build",
     "multiTenant": true,
     "tenantModel": "subdomain"
   },
