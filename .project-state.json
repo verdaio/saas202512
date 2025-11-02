@@ -1,0 +1,25 @@
+{
+  "projectId": "saas202512",
+  "created": "2025-11-02",
+  "templateType": "standard",
+  "version": "2.0",
+  "state": {
+    "hasGreeted": false,
+    "setupComplete": false,
+    "currentSprint": null,
+    "phase": "planning"
+  },
+  "metadata": {
+    "tradeName": null,
+    "teamType": null,
+    "multiTenant": true,
+    "tenantModel": "subdomain"
+  },
+  "ports": {
+    "frontend": "3012",
+    "backend": "8012",
+    "postgres": "5412",
+    "redis": "6412",
+    "mongo": "27012"
+  }
+}
