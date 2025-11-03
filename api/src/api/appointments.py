@@ -1,10 +1,10 @@
 """
 Appointment API endpoints
 """
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.orm import Session
 from typing import List
-from datetime import datetime
+from datetime import datetime, date
 from uuid import UUID
 import uuid
 
@@ -16,6 +16,7 @@ from ..models.appointment import Appointment, AppointmentStatus
 from ..models.owner import Owner
 from ..models.service import Service
 from ..schemas.appointment import AppointmentCreate, AppointmentUpdate, AppointmentResponse
+from ..services.scheduling_service import SchedulingService
 
 router = APIRouter()
 
@@ -260,3 +261,53 @@ async def complete_appointment(
     db.refresh(appointment)
 
     return appointment
+
+
+@router.get("/availability/slots", response_model=List[dict])
+async def get_available_slots(
+    service_id: UUID = Query(..., description="Service ID"),
+    date: date = Query(..., description="Date to check"),
+    staff_id: UUID = Query(None, description="Optional staff member ID"),
+    db: Session = Depends(get_db),
+    current_tenant: Tenant = Depends(get_current_tenant)
+):
+    """
+    Get available time slots for a service on a given date (public endpoint for booking widget)
+    """
+    slots = SchedulingService.get_available_time_slots(
+        db=db,
+        tenant=current_tenant,
+        date=date,
+        service_id=service_id,
+        staff_id=staff_id
+    )
+
+    return slots
+
+
+@router.get("/availability/next", response_model=dict)
+async def get_next_available_slot(
+    service_id: UUID = Query(..., description="Service ID"),
+    start_date: date = Query(..., description="Start searching from this date"),
+    staff_id: UUID = Query(None, description="Optional staff member ID"),
+    db: Session = Depends(get_db),
+    current_tenant: Tenant = Depends(get_current_tenant)
+):
+    """
+    Find the next available time slot for a service (public endpoint for booking widget)
+    """
+    slot = SchedulingService.find_next_available_slot(
+        db=db,
+        tenant=current_tenant,
+        service_id=service_id,
+        start_date=start_date,
+        staff_id=staff_id
+    )
+
+    if not slot:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="No available slots found in the next 14 days"
+        )
+
+    return slot

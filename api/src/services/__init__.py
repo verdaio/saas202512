@@ -7,6 +7,7 @@ from .pet_service import PetService
 from .service_service import ServiceService
 from .appointment_service import AppointmentService
 from .payment_service import PaymentService
+from .scheduling_service import SchedulingService
 
 __all__ = [
     "StaffService",
@@ -15,4 +16,5 @@ __all__ = [
     "ServiceService",
     "AppointmentService",
     "PaymentService",
+    "SchedulingService",
 ]

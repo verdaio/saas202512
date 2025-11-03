@@ -1,6 +1,6 @@
 """
 Appointment service with business logic
-TODO Sprint 2: Add scheduling validation and double-booking prevention
+Sprint 2: Scheduling validation and double-booking prevention implemented
 """
 from sqlalchemy.orm import Session
 from typing import List, Optional
@@ -13,6 +13,7 @@ from ..models.owner import Owner
 from ..models.service import Service
 from ..models.tenant import Tenant
 from ..schemas.appointment import AppointmentCreate, AppointmentUpdate
+from .scheduling_service import SchedulingService
 
 
 class AppointmentService:
@@ -25,9 +26,8 @@ class AppointmentService:
         appointment_data: AppointmentCreate
     ) -> Appointment:
         """
-        Create new appointment with validation
-        TODO Sprint 2: Add double-booking prevention
-        TODO Sprint 2: Add staff/resource availability checking
+        Create new appointment with comprehensive validation
+        Includes double-booking prevention and availability checking
         """
         # Verify owner exists
         owner = db.query(Owner).filter(
@@ -47,17 +47,27 @@ class AppointmentService:
         if not service:
             raise ValueError("Service not found")
 
+        # Validate booking with scheduling service (includes double-booking prevention)
+        is_valid, error_message = SchedulingService.validate_booking(
+            db=db,
+            tenant=tenant,
+            start_time=appointment_data.scheduled_start,
+            end_time=appointment_data.scheduled_end,
+            service_id=appointment_data.service_id,
+            pet_ids=appointment_data.pet_ids,
+            staff_id=appointment_data.staff_id,
+            resource_id=appointment_data.resource_id
+        )
+
+        if not is_valid:
+            raise ValueError(error_message)
+
         # Calculate deposit if required
         deposit_required = None
         if service.deposit_amount:
             deposit_required = service.deposit_amount
         elif service.deposit_percentage:
             deposit_required = (service.price * service.deposit_percentage) // 100
-
-        # TODO Sprint 2: Validate time slot availability
-        # TODO Sprint 2: Check staff availability
-        # TODO Sprint 2: Check resource availability
-        # TODO Sprint 2: Validate vaccination requirements
 
         appointment = Appointment(
             id=uuid.uuid4(),
@@ -127,15 +137,39 @@ class AppointmentService:
         appointment_data: AppointmentUpdate
     ) -> Optional[Appointment]:
         """
-        Update appointment
-        TODO Sprint 2: Re-validate time slot if time changed
+        Update appointment with re-validation if time changed
         """
         appointment = AppointmentService.get_appointment(db, tenant, appointment_id)
 
         if not appointment:
             return None
 
-        # TODO Sprint 2: If time is changing, validate new time slot
+        # Check if time is changing
+        time_changed = (
+            appointment_data.scheduled_start is not None or
+            appointment_data.scheduled_end is not None
+        )
+
+        if time_changed:
+            # Get new times (use existing if not provided)
+            new_start = appointment_data.scheduled_start or appointment.scheduled_start
+            new_end = appointment_data.scheduled_end or appointment.scheduled_end
+
+            # Re-validate with scheduling service
+            is_valid, error_message = SchedulingService.validate_booking(
+                db=db,
+                tenant=tenant,
+                start_time=new_start,
+                end_time=new_end,
+                service_id=appointment.service_id,
+                pet_ids=[pet.id for pet in appointment.pets] if hasattr(appointment, 'pets') else [],
+                staff_id=appointment_data.staff_id or appointment.staff_id,
+                resource_id=appointment.resource_id,
+                exclude_appointment_id=appointment_id  # Exclude this appointment from conflict check
+            )
+
+            if not is_valid:
+                raise ValueError(error_message)
 
         # Update fields
         for field, value in appointment_data.model_dump(exclude_unset=True).items():
