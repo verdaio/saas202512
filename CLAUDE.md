@@ -29,17 +29,17 @@ This file provides guidance to Claude Code (claude.ai/code) when working with th
 
 | Guide | Purpose | Reference When |
 |-------|---------|----------------|
-| **docs/DEVELOPER-GUIDE.md** | Tooling requirements, Docker setup, diagnostics | Setting up environment, troubleshooting infrastructure |
-| **docs/CONTRIBUTING.md** | File naming, code style, formatting standards | Creating files, writing code, naming conventions |
-| **docs/TESTING-GUIDE.md** | Pre-commit checks, smoke tests, validation | Before commits, before deployment |
+| **DEVELOPMENT-GUIDE.md** | Tooling requirements, Docker setup, diagnostics | Setting up environment, troubleshooting infrastructure |
+| **STYLE-GUIDE.md** | File naming, code style, formatting standards | Creating files, writing code, naming conventions |
+| **TESTING-CHECKLIST.md** | Pre-commit checks, smoke tests, validation | Before commits, before deployment |
 | **.gitignore** | What gets committed vs ignored | Understanding generated files policy |
 
 **Key Standards:**
-- **Tooling:** Node.js 20+, Python 3.11+, Docker Compose v2+ (see docs/DEVELOPER-GUIDE.md)
-- **File Naming:** Varies by directory - UPPER-KEBAB for quick-reference/, Title Case for docs/ (see docs/CONTRIBUTING.md)
-- **Generated Files:** Do NOT commit .docx/.xlsx/.pptx, use screenshots in PRs (see .gitignore comments)
+- **Tooling:** Node.js 18+, npm 9+, Docker Compose v2+, Azure CLI 2.60+ (see DEVELOPMENT-GUIDE.md)
+- **File Naming:** Varies by directory - UPPER-KEBAB for quick-reference/, kebab-case for templates (see STYLE-GUIDE.md)
+- **Generated Files:** Commit `.docx` in fundraising/, ignore `.pdf` exports (see .gitignore comments)
 - **Code Style:** Follow `C:\devop\coding_standards.md` - 2-space indentation for JS/YAML/JSON, camelCase for JS, snake_case for Python
-- **Testing:** Run smoke tests before commits (see docs/TESTING-GUIDE.md)
+- **Testing:** Run `npm run lint && npm test && npm run build` before commits (see TESTING-CHECKLIST.md)
 
 **Quick Diagnostics:**
 ```bash
@@ -58,8 +58,8 @@ npm run lint && npm test && npm run build
 
 ## 🏢 Multi-Tenant Architecture
 
-**Multi-Tenant Enabled:** true
-**Tenant Model:** subdomain
+**Multi-Tenant Enabled:** {{MULTI_TENANT_ENABLED}}
+**Tenant Model:** {{TENANT_MODEL}}
 
 ### Important Considerations
 
@@ -77,17 +77,17 @@ npm run lint && npm test && npm run build
 
 ## 🎯 IMPORTANT: First-Time Project Detection
 
-**Project ID:** saas202512
-**Created:** 2025-11-02
+**Project ID:** {{PROJECT_NAME}}
+**Created:** {{CREATION_DATE}}
 **Status:** active
 
 ### First Time Opening This Project?
 
-**IMPORTANT:** You are the project assistant for saas202512, NOT the template system manager.
+**IMPORTANT:** You are the project assistant for {{PROJECT_NAME}}, NOT the template system manager.
 
 **If `_START-HERE.md` exists and user hasn't greeted yet:**
 
-Proactively greet: "👋 Welcome to saas202512! I see this is a new project. Would you like help getting started? I can walk you through creating your roadmap, sprint plan, and OKRs. Just say 'yes' or 'help me get started'!"
+Proactively greet: "👋 Welcome to {{PROJECT_NAME}}! I see this is a new project. Would you like help getting started? I can walk you through creating your roadmap, sprint plan, and OKRs. Just say 'yes' or 'help me get started'!"
 
 **When user responds positively, FIRST ask about setup mode:**
 
@@ -368,7 +368,7 @@ npx claude-code-templates@latest --command testing/generate-tests
 2. Ask: feature name, target users, problem to solve
 3. Read `product/prd-template.md`
 4. Guide through sections (Problem, Solution, Success Metrics)
-5. **If multi-tenant (true==true):** Add multi-tenant considerations section
+5. **If multi-tenant ({{MULTI_TENANT_ENABLED}}==true):** Add multi-tenant considerations section
 6. Create PRD in `product/PRDs/`
 7. Link to roadmap and relevant sprints
 
@@ -418,7 +418,7 @@ npx claude-code-templates@latest --command testing/generate-tests
 1. Ask: What are you designing?
 2. Read existing `technical/adr/` for context
 3. Use `technical/adr-template.md` for decisions
-4. **If multi-tenant (true==true):** Reference `technical/multi-tenant-architecture.md` and ensure tenant isolation is considered
+4. **If multi-tenant ({{MULTI_TENANT_ENABLED}}==true):** Reference `technical/multi-tenant-architecture.md` and ensure tenant isolation is considered
 5. Create ADR documenting choice and alternatives
 6. Update tech specs if needed
 
@@ -485,7 +485,7 @@ npx claude-code-templates@latest --command testing/generate-tests
 1. Determine doc type (API, runbook, process, architecture)
 2. Use appropriate template
 3. For code docs: analyze code structure first
-4. **If multi-tenant (true==true):** Ensure API docs show tenant scoping in examples
+4. **If multi-tenant ({{MULTI_TENANT_ENABLED}}==true):** Ensure API docs show tenant scoping in examples
 5. Create in relevant folder (technical/, workflows/)
 6. Link to related docs
 
@@ -615,29 +615,31 @@ Our standards are based on Google's Style Guides and prioritize:
 
 ## 🔌 MCP Integration (Optional)
 
-**MCP servers are NOT pre-configured in this project.** They can be installed as needed.
+**MCP servers are NOT pre-configured, but we've made setup easy.**
 
-MCP (Model Context Protocol) servers provide specialized capabilities for external service integration. Common examples include:
-- Stripe MCP - Payment processing
-- GitHub MCP - Repository management
-- PostgreSQL MCP - Database access
-- Notion MCP - Documentation access
-- Vercel MCP - Deployment management
+This project includes a sample MCP configuration template to help you set up external service integrations.
 
-**To install an MCP server:**
-1. Find the MCP you need (check [MCP Registry](https://github.com/modelcontextprotocol/servers) or Claude docs)
-2. Follow installation instructions for your specific MCP
-3. Configure in your Claude desktop app or MCP config file
+### Quick Setup (5 Minutes)
 
-**When to consider installing an MCP:**
-- Need to access external APIs or services
-- Require specialized data sources
-- Want to automate integrations with tools you use
+**Files included:**
+- `.mcp-config-template.json` - Sample configuration with popular MCPs
+- `MCP-SETUP-GUIDE.md` - Complete setup instructions
 
-**When NOT needed:**
-- Simple questions answerable without external data
-- Core development work (use built-in Claude Code features)
-- When direct API calls are simpler
+**Recommended MCPs for SaaS:**
+- ⭐ **GitHub** - Manage repos, issues, PRs (start here)
+- ⭐ **Filesystem** - Claude can read/write project files
+- ⭐ **Memory** - Context persistence across sessions
+- **PostgreSQL** - Database queries and schema management
+- **Stripe** - Payment processing integration
+- **Notion** - Documentation access
+
+**To get started:**
+1. Get a GitHub token: https://github.com/settings/tokens
+2. Copy `.mcp-config-template.json` to your Claude Desktop config
+3. Replace `<your-github-token>` with your actual token
+4. Restart Claude Desktop
+
+**Full instructions:** See `MCP-SETUP-GUIDE.md` for complete step-by-step guide with all MCPs, troubleshooting, and security best practices.
 
 ---
 
@@ -864,7 +866,7 @@ Reference: `DEVELOPMENT-GUIDE.md#error-monitoring-observability`
 
 ### Multi-Tenant Considerations
 
-**If multi-tenant (subdomain==true):**
+**If multi-tenant ({{MULTI_TENANT_ENABLED}}==true):**
 
 Remind user to set tenant context in errors:
 
@@ -940,11 +942,11 @@ pkill -f analytics
 
 ```powershell
 # Windows - Kill by specific port
-netstat -ano | findstr :3012
+netstat -ano | findstr :{{PROJECT_PORT_FRONTEND}}
 taskkill /F /PID <specific-PID>
 
 # Mac/Linux - Kill by specific port
-kill $(lsof -ti:3012)
+kill $(lsof -ti:{{PROJECT_PORT_FRONTEND}})
 
 # Docker - Stop only this project's containers
 docker-compose down  # NOT: docker stop $(docker ps -aq)
@@ -953,7 +955,7 @@ docker-compose down  # NOT: docker stop $(docker ps -aq)
 **Golden Rule:** Always target processes by:
 - ✅ Specific PID (from netstat/lsof)
 - ✅ Specific port number (this project's ports only)
-- ✅ Specific container name (`saas202512-postgres`)
+- ✅ Specific container name (`{{PROJECT_NAME}}-postgres`)
 
 **Never target by:**
 - ❌ Process name (`/IM node.exe`)
@@ -1061,13 +1063,13 @@ echo "✅ Changes committed and pushed to GitHub"
 
 ```bash
 # After creating roadmap
-cd /c/devop/saas202512
+cd /c/devop/{{PROJECT_NAME}}
 git add .
 git commit -m "docs: add initial product roadmap and sprint 1 plan"
 git push origin master
 ```
 
-**Tell user:** "✅ Documentation saved and pushed to GitHub at https://github.com/ChrisStephens1971/saas202512"
+**Tell user:** "✅ Documentation saved and pushed to GitHub at https://github.com/ChrisStephens1971/{{PROJECT_NAME}}"
 
 ### Error Handling
 
@@ -1083,9 +1085,9 @@ If push fails:
 ## 🔗 Additional Resources
 
 **Essential Project Guides (in project root):**
-- **docs/DEVELOPER-GUIDE.md** - Tooling requirements, Docker setup, infrastructure diagnostics
-- **docs/CONTRIBUTING.md** - File naming conventions, code style, formatting standards
-- **docs/TESTING-GUIDE.md** - Pre-commit checks, smoke tests, deployment validation
+- **DEVELOPMENT-GUIDE.md** - Tooling requirements, Docker setup, infrastructure diagnostics
+- **STYLE-GUIDE.md** - File naming conventions, code style, formatting standards
+- **TESTING-CHECKLIST.md** - Pre-commit checks, smoke tests, deployment validation
 - **.gitignore** - Generated files policy (see comments at top)
 - **C:\devop\coding_standards.md** - Comprehensive coding standards (Google Style Guides)
 
@@ -1115,4 +1117,4 @@ If push fails:
 ---
 
 **Template Version:** 1.0
-**Last Updated:** 2025-11-02
+**Last Updated:** {{CREATION_DATE}}
