@@ -65,7 +65,7 @@ async def api_root():
 
 
 # Import and include routers
-from .api import auth, staff, owners, pets, services, resources, appointments, packages, payments, vaccination_records
+from .api import auth, staff, owners, pets, services, resources, appointments, packages, payments, vaccination_records, webhooks
 
 # Authentication
 app.include_router(auth.router, prefix=f"{settings.API_V1_STR}/auth", tags=["auth"])
@@ -96,6 +96,9 @@ app.include_router(payments.router, prefix=f"{settings.API_V1_STR}/payments", ta
 
 # Vaccination records
 app.include_router(vaccination_records.router, prefix=f"{settings.API_V1_STR}/vaccinations", tags=["vaccinations"])
+
+# Webhooks (no /api/v1 prefix)
+app.include_router(webhooks.router, prefix="/webhooks", tags=["webhooks"])
 
 
 if __name__ == "__main__":

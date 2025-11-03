@@ -1,6 +1,6 @@
 """
 Payment service with business logic
-TODO Sprint 3: Add Stripe integration
+Sprint 3: Stripe integration implemented
 """
 from sqlalchemy.orm import Session
 from typing import List, Optional
@@ -11,6 +11,7 @@ from ..models.payment import Payment, PaymentStatus, PaymentType
 from ..models.owner import Owner
 from ..models.tenant import Tenant
 from ..schemas.payment import PaymentCreate, PaymentUpdate
+from ..integrations.stripe_service import StripeService
 
 
 class PaymentService:
