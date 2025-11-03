@@ -33,7 +33,13 @@ This project has been created with a complete planning and documentation structu
 
 **Have a project brief ready?**
 
-Open `project-brief.md` and paste your vision, or skip this - Claude will ask you questions.
+Add files to the `project-brief/` directory:
+- `project-brief/brief.md` - Main project vision
+- `project-brief/vision.md` - Long-term vision
+- `project-brief/target-users.md` - User personas
+- Or any other `.md` files - Claude will read them all!
+
+Or skip this - Claude will ask you questions.
 
 ### 3. Start Planning
 
@@ -84,6 +90,127 @@ Tell Claude any of these:
 This project integrates with **Claude Code Templates** - 163 agents and 210 commands for technical implementation.
 
 See `docs/INTEGRATIONS.md` for setup instructions.
+
+---
+
+## 📊 Error Monitoring (Optional)
+
+**Enable before deploying to production!**
+
+### Why Monitoring?
+
+- ✅ Know when users encounter bugs in real-time
+- ✅ See exactly what happened (stack traces, session replay, context)
+- ✅ Prioritize fixes based on impact
+- ✅ Debug production issues faster
+- ✅ Track performance and bottlenecks
+
+### What's Included
+
+This project includes **TWO monitoring solutions** (choose one or both):
+
+**1. Sentry** - Best-in-class error tracking
+- ✅ **Session replay** - See what users did before error (HUGE for debugging)
+- ✅ Best error grouping and deduplication
+- ✅ Developer-focused UI
+- ✅ Free tier: 5,000 events/month
+
+**2. Azure Application Insights** - Azure-native monitoring
+- ✅ **Azure integration** - Single vendor, native to your infrastructure
+- ✅ Application performance monitoring (APM)
+- ✅ Distributed tracing across services
+- ✅ Free tier: 5GB data/month
+
+### Which Should I Choose?
+
+**Quick Decision Guide:**
+
+| Your Situation | Recommendation |
+|----------------|----------------|
+| **Solo founder, MVP stage** | → **Sentry** (session replay is invaluable) |
+| **Team, Azure-heavy infrastructure** | → **App Insights** (native integration) |
+| **Production app with revenue** | → **Both** (comprehensive coverage) |
+| **Still developing locally** | → **Neither** (enable later) |
+
+**See full comparison:** `technical/adr/examples/example-adr-monitoring-strategy.md`
+
+### Setup - Option 1: Sentry (5 minutes)
+
+**1. Create Free Account**
+- Visit https://sentry.io/signup/
+- Free tier: 5,000 events/month
+
+**2. Get DSN**
+- Create project → Select "Next.js" and "FastAPI"
+- Copy DSN (looks like `https://abc123@sentry.io/456789`)
+
+**3. Add to .env.local**
+```bash
+NEXT_PUBLIC_SENTRY_DSN=https://your-dsn@sentry.io/your-project
+SENTRY_DSN=https://your-dsn@sentry.io/your-project
+SENTRY_ENVIRONMENT=production
+```
+
+**4. Test**
+```typescript
+// Frontend: throw new Error('Test Sentry error')
+// Backend: raise Exception('Test Sentry error')
+```
+
+**Files:** `web/src/lib/monitoring/sentry.ts`, `api/src/lib/monitoring/sentry.py`
+
+### Setup - Option 2: Application Insights (10 minutes)
+
+**1. Create Azure Resource**
+- Azure Portal → Create "Application Insights"
+- Choose region and resource group
+
+**2. Get Connection String**
+- Resource → Properties → Copy "Connection String"
+
+**3. Add to .env.local**
+```bash
+NEXT_PUBLIC_APPINSIGHTS_CONNECTION_STRING=InstrumentationKey=xxx;...
+APPLICATIONINSIGHTS_CONNECTION_STRING=InstrumentationKey=xxx;...
+APPINSIGHTS_ENVIRONMENT=production
+```
+
+**4. Install Packages**
+```bash
+# Frontend
+npm install @microsoft/applicationinsights-web @microsoft/applicationinsights-react-js
+
+# Backend
+pip install opencensus-ext-azure opencensus-ext-flask
+```
+
+**Files:** `web/src/lib/monitoring/app-insights.ts`, `api/src/lib/monitoring/app_insights.py`
+
+### Setup - Option 3: Both
+
+Simply complete both setups above. Each monitors different aspects:
+- **Sentry** → Errors + session replay
+- **App Insights** → Performance + Azure infrastructure
+
+### Cost Comparison
+
+| Option | Free Tier | Paid Tier | Best For |
+|--------|-----------|-----------|----------|
+| **Sentry** | 5K events/mo | $26/mo (50K events) | Error debugging |
+| **App Insights** | 5GB data/mo | ~$2.30/GB | Azure monitoring |
+| **Both** | Free tier for both | ~$26-76/mo | Comprehensive |
+
+### When to Enable
+
+**Skip for now if:**
+- Still in planning/design phase
+- Building MVP locally
+- No real users yet
+
+**Enable before:**
+- Deploying to staging/production
+- Launching to beta users
+- Going live
 
 ---
 
@@ -156,6 +283,7 @@ A beginner-friendly guide is available:
 
 ---
 
+## 🔍 Project Health Check**Want to verify your project setup is correct?**This project includes a validation script to check project health:```bashcd C:\devopsaas202512python scriptsalidator.py```**What it checks:**- ✅ No unreplaced template placeholders- ✅ Git repository initialized- ✅ GitHub remote configured- ✅ Required files present (CLAUDE.md, README.md, .gitignore)- ✅ Directory structure complete- ✅ VS Code workspace file exists**When to run:**- After initial project setup- Before deploying to production- When troubleshooting project issues- After making major structural changes---
 ## ❓ Questions?
 
 Just ask Claude - it's here to help! Say "help me get started" to begin.
