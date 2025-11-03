@@ -613,29 +613,31 @@ Our standards are based on Google's Style Guides and prioritize:
 
 ---
 
-## 🔌 MCP Integration
+## 🔌 MCP Integration (Optional)
 
-**When to Use MCP Servers:**
+**MCP servers are NOT pre-configured in this project.** They can be installed as needed.
 
-This project has access to MCP (Model Context Protocol) servers that provide specialized capabilities. See `MCP-USAGE-GUIDE.md` for comprehensive documentation.
+MCP (Model Context Protocol) servers provide specialized capabilities for external service integration. Common examples include:
+- Stripe MCP - Payment processing
+- GitHub MCP - Repository management
+- PostgreSQL MCP - Database access
+- Notion MCP - Documentation access
+- Vercel MCP - Deployment management
 
-**Quick Reference:**
-- **Socket MCP** → Dependency security scanning
-- **Clarity MCP** → Web analytics and user behavior
-- **Excel/Graph MCP** → Business data from spreadsheets
-- **Context7 MCP** → Deep code understanding
-- **Apify MCP** → Competitive intelligence
-- **Figma MCP** → Design system tokens
-- **Tableau MCP** → BI dashboards
-- **Coupler.io MCP** → Unified data hub
-- **Windows MCP** → Local file system
+**To install an MCP server:**
+1. Find the MCP you need (check [MCP Registry](https://github.com/modelcontextprotocol/servers) or Claude docs)
+2. Follow installation instructions for your specific MCP
+3. Configure in your Claude desktop app or MCP config file
 
-**When NOT to use MCPs:**
-- Simple questions answerable in 30 seconds
-- Well-known packages (express, react, etc.)
-- When data isn't needed for the task
+**When to consider installing an MCP:**
+- Need to access external APIs or services
+- Require specialized data sources
+- Want to automate integrations with tools you use
 
-**Full guide:** `MCP-USAGE-GUIDE.md` (comprehensive patterns, workflows, and examples)
+**When NOT needed:**
+- Simple questions answerable without external data
+- Core development work (use built-in Claude Code features)
+- When direct API calls are simpler
 
 ---
 
