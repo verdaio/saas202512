@@ -65,12 +65,37 @@ async def api_root():
 
 
 # Import and include routers
-# NOTE: Routers will be added as they are created
-# from .api.endpoints import auth, tenants, appointments, services
-# app.include_router(auth.router, prefix=f"{settings.API_V1_STR}/auth", tags=["auth"])
-# app.include_router(tenants.router, prefix=f"{settings.API_V1_STR}/tenants", tags=["tenants"])
-# app.include_router(appointments.router, prefix=f"{settings.API_V1_STR}/appointments", tags=["appointments"])
-# app.include_router(services.router, prefix=f"{settings.API_V1_STR}/services", tags=["services"])
+from .api import auth, staff, owners, pets, services, resources, appointments, packages, payments, vaccination_records
+
+# Authentication
+app.include_router(auth.router, prefix=f"{settings.API_V1_STR}/auth", tags=["auth"])
+
+# Staff management
+app.include_router(staff.router, prefix=f"{settings.API_V1_STR}/staff", tags=["staff"])
+
+# Pet owners
+app.include_router(owners.router, prefix=f"{settings.API_V1_STR}/owners", tags=["owners"])
+
+# Pets
+app.include_router(pets.router, prefix=f"{settings.API_V1_STR}/pets", tags=["pets"])
+
+# Services
+app.include_router(services.router, prefix=f"{settings.API_V1_STR}/services", tags=["services"])
+
+# Resources
+app.include_router(resources.router, prefix=f"{settings.API_V1_STR}/resources", tags=["resources"])
+
+# Appointments
+app.include_router(appointments.router, prefix=f"{settings.API_V1_STR}/appointments", tags=["appointments"])
+
+# Packages (punch cards, memberships)
+app.include_router(packages.router, prefix=f"{settings.API_V1_STR}/packages", tags=["packages"])
+
+# Payments
+app.include_router(payments.router, prefix=f"{settings.API_V1_STR}/payments", tags=["payments"])
+
+# Vaccination records
+app.include_router(vaccination_records.router, prefix=f"{settings.API_V1_STR}/vaccinations", tags=["vaccinations"])
 
 
 if __name__ == "__main__":
