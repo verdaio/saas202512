@@ -1,24 +1,5 @@
-# Git
-.git
-.gitignore
-.gitattributes
-.github
-
-# Environment files
-.env
-.env.*
-!.env.example
-.envrc
-
-# Dependencies
-node_modules
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-
 # Python
-__pycache__
+__pycache__/
 *.py[cod]
 *$py.class
 *.so
@@ -26,67 +7,56 @@ __pycache__
 env/
 venv/
 ENV/
-.venv
-pip-log.txt
-pip-delete-this-directory.txt
-.pytest_cache
-.coverage
-htmlcov/
-*.egg-info/
-dist/
 build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+.next/
+.vercel
+
+# Environment
+.env
+.env.local
+.env.*.local
 
 # IDE
-.vscode
-.idea
+.vscode/
+.idea/
 *.swp
 *.swo
 *~
+
+# OS
 .DS_Store
+Thumbs.db
 
-# Build outputs
-.next
-out
-build
-dist
-target
-
-# Logs
-logs
-*.log
-
-# Testing
-coverage
-.nyc_output
-.jest
+# Git
+.git/
+.gitignore
 
 # Documentation
-docs/
 *.md
 !README.md
 
-# CI/CD
-.github
-.gitlab-ci.yml
-azure-pipelines.yml
-
-# Docker
-Dockerfile*
-docker-compose*.yml
-.dockerignore
-
-# Temporary files
-tmp/
-temp/
-*.tmp
-
-# Database
-*.db
-*.sqlite
-*.sqlite3
-
-# Other
-.cache
-.npm
-.eslintcache
-.stylelintcache
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
