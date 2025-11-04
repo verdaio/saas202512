@@ -95,7 +95,7 @@ class Payment(Base):
     receipt_email = Column(String(255), nullable=True)
     receipt_url = Column(String(500), nullable=True)
     notes = Column(Text, nullable=True)
-    metadata = Column(JSON, nullable=True)
+    payment_metadata = Column(JSON, nullable=True)  # Renamed from 'metadata' to avoid SQLAlchemy conflict
 
     # Timestamps
     created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
