@@ -1,0 +1,24 @@
+Copy and paste these commands one at a time in PowerShell:
+
+# 1. Stop containers
+docker-compose -f docker-compose.full.yml down
+
+# 2. Pull latest code
+git pull origin claude/read-claude-md-011CUoQZk34dyYEvfZmZiuQu
+
+# 3. Rebuild API (takes 2-3 minutes)
+docker-compose -f docker-compose.full.yml build --no-cache api
+
+# 4. Rebuild Web (takes 2-3 minutes)
+docker-compose -f docker-compose.full.yml build --no-cache web
+
+# 5. Start all services
+docker-compose -f docker-compose.full.yml up -d
+
+# 6. Wait 30 seconds, then check status
+docker-compose -f docker-compose.full.yml ps
+
+# 7. Test these URLs:
+#    http://localhost:3010
+#    http://localhost:5410/health
+#    http://localhost:5410/api/v1/docs
