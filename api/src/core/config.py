@@ -21,13 +21,13 @@ class Settings(BaseSettings):
     DEBUG: bool = True
 
     # Database
-    DATABASE_URL: str = "postgresql://postgres:postgres@localhost:5412/saas202512"
+    DATABASE_URL: str = "postgresql://postgres:postgres@postgres:5432/saas202512"
     POSTGRES_USER: str = "postgres"
     POSTGRES_PASSWORD: str = "postgres"
     POSTGRES_DB: str = "saas202512"
 
     # Redis
-    REDIS_URL: str = "redis://localhost:6412"
+    REDIS_URL: str = "redis://redis:6379"
 
     # JWT Authentication
     JWT_SECRET: str = "your-secret-key-here-change-in-production"

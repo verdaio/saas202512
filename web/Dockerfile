@@ -23,6 +23,7 @@ WORKDIR /app
 
 # Set to production
 ENV NODE_ENV=production
+ENV PORT=3010
 
 # Copy necessary files from builder
 COPY --from=builder /app/public ./public
