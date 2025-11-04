@@ -36,7 +36,6 @@ This file provides guidance to Claude Code (claude.ai/code) when working with th
 - Forces clarity and conciseness
 
 **Exceptions (comprehensive guides allowed to exceed):**
-- ✅ `CLAUDE.md` (this file - comprehensive project guidance)
 - ✅ `DEVELOPMENT-GUIDE.md` (complete tooling and setup)
 - ✅ `STYLE-GUIDE.md` (exhaustive style reference)
 - ✅ `MCP-SETUP-GUIDE.md` (complete MCP documentation)
@@ -102,8 +101,8 @@ npm run lint && npm test && npm run build
 
 ## 🏢 Multi-Tenant Architecture
 
-**Multi-Tenant Enabled:** {{MULTI_TENANT_ENABLED}}
-**Tenant Model:** {{TENANT_MODEL}}
+**Multi-Tenant Enabled:** true
+**Tenant Model:** subdomain
 
 ### Important Considerations
 
@@ -121,17 +120,17 @@ npm run lint && npm test && npm run build
 
 ## 🎯 IMPORTANT: First-Time Project Detection
 
-**Project ID:** {{PROJECT_NAME}}
-**Created:** {{CREATION_DATE}}
+**Project ID:** saas202512
+**Created:** 2025-11-02
 **Status:** active
 
 ### First Time Opening This Project?
 
-**IMPORTANT:** You are the project assistant for {{PROJECT_NAME}}, NOT the template system manager.
+**IMPORTANT:** You are the project assistant for saas202512, NOT the template system manager.
 
 **If `_START-HERE.md` exists and user hasn't greeted yet:**
 
-Proactively greet: "👋 Welcome to {{PROJECT_NAME}}! I see this is a new project. Would you like help getting started? I can walk you through creating your roadmap, sprint plan, and OKRs. Just say 'yes' or 'help me get started'!"
+Proactively greet: "👋 Welcome to saas202512! I see this is a new project. Would you like help getting started? I can walk you through creating your roadmap, sprint plan, and OKRs. Just say 'yes' or 'help me get started'!"
 
 **When user responds positively, FIRST ask about setup mode:**
 
@@ -412,7 +411,7 @@ npx claude-code-templates@latest --command testing/generate-tests
 2. Ask: feature name, target users, problem to solve
 3. Read `product/prd-template.md`
 4. Guide through sections (Problem, Solution, Success Metrics)
-5. **If multi-tenant ({{MULTI_TENANT_ENABLED}}==true):** Add multi-tenant considerations section
+5. **If multi-tenant (true):** Add multi-tenant considerations section
 6. Create PRD in `product/PRDs/`
 7. Link to roadmap and relevant sprints
 
@@ -462,7 +461,7 @@ npx claude-code-templates@latest --command testing/generate-tests
 1. Ask: What are you designing?
 2. Read existing `technical/adr/` for context
 3. Use `technical/adr-template.md` for decisions
-4. **If multi-tenant ({{MULTI_TENANT_ENABLED}}==true):** Reference `technical/multi-tenant-architecture.md` and ensure tenant isolation is considered
+4. **If multi-tenant (true):** Reference `technical/multi-tenant-architecture.md` and ensure tenant isolation is considered
 5. Create ADR documenting choice and alternatives
 6. Update tech specs if needed
 
@@ -529,7 +528,7 @@ npx claude-code-templates@latest --command testing/generate-tests
 1. Determine doc type (API, runbook, process, architecture)
 2. Use appropriate template
 3. For code docs: analyze code structure first
-4. **If multi-tenant ({{MULTI_TENANT_ENABLED}}==true):** Ensure API docs show tenant scoping in examples
+4. **If multi-tenant (true):** Ensure API docs show tenant scoping in examples
 5. Create in relevant folder (technical/, workflows/)
 6. Link to related docs
 
@@ -905,7 +904,7 @@ Reference: `DEVELOPMENT-GUIDE.md#error-monitoring-observability`
 
 ### Multi-Tenant Considerations
 
-**If multi-tenant ({{MULTI_TENANT_ENABLED}}==true):**
+**If multi-tenant (true):**
 
 Remind user to set tenant context in errors:
 
@@ -981,11 +980,11 @@ pkill -f analytics
 
 ```powershell
 # Windows - Kill by specific port
-netstat -ano | findstr :{{PROJECT_PORT_FRONTEND}}
+netstat -ano | findstr :3012
 taskkill /F /PID <specific-PID>
 
 # Mac/Linux - Kill by specific port
-kill $(lsof -ti:{{PROJECT_PORT_FRONTEND}})
+kill $(lsof -ti:3012)
 
 # Docker - Stop only this project's containers
 docker-compose down  # NOT: docker stop $(docker ps -aq)
@@ -994,7 +993,7 @@ docker-compose down  # NOT: docker stop $(docker ps -aq)
 **Golden Rule:** Always target processes by:
 - ✅ Specific PID (from netstat/lsof)
 - ✅ Specific port number (this project's ports only)
-- ✅ Specific container name (`{{PROJECT_NAME}}-postgres`)
+- ✅ Specific container name (`saas202512-postgres`)
 
 **Never target by:**
 - ❌ Process name (`/IM node.exe`)
@@ -1102,13 +1101,13 @@ echo "✅ Changes committed and pushed to GitHub"
 
 ```bash
 # After creating roadmap
-cd /c/devop/{{PROJECT_NAME}}
+cd /c/devop/saas202512
 git add .
 git commit -m "docs: add initial product roadmap and sprint 1 plan"
 git push origin master
 ```
 
-**Tell user:** "✅ Documentation saved and pushed to GitHub at https://github.com/ChrisStephens1971/{{PROJECT_NAME}}"
+**Tell user:** "✅ Documentation saved and pushed to GitHub at https://github.com/ChrisStephens1971/saas202512"
 
 ### Error Handling
 
@@ -1156,4 +1155,4 @@ If push fails:
 ---
 
 **Template Version:** 1.0
-**Last Updated:** {{CREATION_DATE}}
+**Last Updated:** 2025-11-02
