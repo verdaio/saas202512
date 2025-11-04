@@ -58,5 +58,5 @@ Write-Host "  API Docs:  http://localhost:5410/api/v1/docs" -ForegroundColor Whi
 Write-Host "  Health:    http://localhost:5410/health" -ForegroundColor White
 Write-Host ""
 Write-Host "To view logs:" -ForegroundColor Yellow
-Write-Host "  docker-compose -f docker-compose.full.yml logs -f" -ForegroundColor White
+Write-Host '  docker-compose -f docker-compose.full.yml logs -f' -ForegroundColor White
 Write-Host ""
