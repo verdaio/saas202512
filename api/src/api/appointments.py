@@ -17,6 +17,7 @@ from ..models.owner import Owner
 from ..models.service import Service
 from ..schemas.appointment import AppointmentCreate, AppointmentUpdate, AppointmentResponse
 from ..services.scheduling_service import SchedulingService
+from ..services.appointment_service import AppointmentService
 
 router = APIRouter()
 
@@ -29,48 +30,25 @@ async def create_appointment(
 ):
     """
     Create new appointment (public endpoint for booking widget)
+
+    Includes comprehensive validation:
+    - Staff/resource availability checking
+    - Double-booking prevention with row-level locking
+    - Vaccination requirement validation
+    - Schedule validation (working hours, breaks)
     """
-    # Verify owner exists
-    owner = db.query(Owner).filter(
-        Owner.id == appointment_data.owner_id,
-        Owner.tenant_id == current_tenant.id
-    ).first()
-
-    if not owner:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Owner not found"
+    try:
+        appointment = AppointmentService.create_appointment(
+            db=db,
+            tenant=current_tenant,
+            appointment_data=appointment_data
         )
-
-    # Verify service exists
-    service = db.query(Service).filter(
-        Service.id == appointment_data.service_id,
-        Service.tenant_id == current_tenant.id
-    ).first()
-
-    if not service:
+        return appointment
+    except ValueError as e:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Service not found"
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(e)
         )
-
-    # TODO: Add scheduling validation (double-booking prevention, availability check)
-    # This will be implemented in Sprint 2
-
-    appointment = Appointment(
-        id=uuid.uuid4(),
-        tenant_id=current_tenant.id,
-        status=AppointmentStatus.PENDING,
-        source="online",
-        total_amount=service.price,
-        **appointment_data.model_dump()
-    )
-
-    db.add(appointment)
-    db.commit()
-    db.refresh(appointment)
-
-    return appointment
 
 
 @router.get("/", response_model=List[AppointmentResponse])
@@ -144,28 +122,32 @@ async def update_appointment(
 ):
     """
     Update appointment (staff/admin/owner)
-    """
-    appointment = db.query(Appointment).filter(
-        Appointment.id == appointment_id,
-        Appointment.tenant_id == current_tenant.id
-    ).first()
 
-    if not appointment:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Appointment not found"
+    If time is changed, re-validates:
+    - Staff/resource availability
+    - No conflicts with other appointments
+    - Schedule compliance
+    """
+    try:
+        appointment = AppointmentService.update_appointment(
+            db=db,
+            tenant=current_tenant,
+            appointment_id=appointment_id,
+            appointment_data=appointment_data
         )
 
-    # TODO: Add scheduling validation if time is changed
+        if not appointment:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Appointment not found"
+            )
 
-    # Update fields
-    for field, value in appointment_data.model_dump(exclude_unset=True).items():
-        setattr(appointment, field, value)
-
-    db.commit()
-    db.refresh(appointment)
-
-    return appointment
+        return appointment
+    except ValueError as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(e)
+        )
 
 
 @router.post("/{appointment_id}/cancel", response_model=AppointmentResponse)
@@ -177,30 +159,25 @@ async def cancel_appointment(
     """
     Cancel appointment (public endpoint for booking widget)
     """
-    appointment = db.query(Appointment).filter(
-        Appointment.id == appointment_id,
-        Appointment.tenant_id == current_tenant.id
-    ).first()
-
-    if not appointment:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Appointment not found"
+    try:
+        appointment = AppointmentService.cancel_appointment(
+            db=db,
+            tenant=current_tenant,
+            appointment_id=appointment_id
         )
 
-    if appointment.status in [AppointmentStatus.COMPLETED, AppointmentStatus.CANCELLED]:
+        if not appointment:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Appointment not found"
+            )
+
+        return appointment
+    except ValueError as e:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Cannot cancel completed or already cancelled appointment"
+            detail=str(e)
         )
-
-    appointment.status = AppointmentStatus.CANCELLED
-    appointment.cancelled_at = datetime.utcnow()
-
-    db.commit()
-    db.refresh(appointment)
-
-    return appointment
 
 
 @router.post("/{appointment_id}/confirm", response_model=AppointmentResponse)
@@ -213,22 +190,17 @@ async def confirm_appointment(
     """
     Confirm appointment (staff/admin/owner)
     """
-    appointment = db.query(Appointment).filter(
-        Appointment.id == appointment_id,
-        Appointment.tenant_id == current_tenant.id
-    ).first()
+    appointment = AppointmentService.confirm_appointment(
+        db=db,
+        tenant=current_tenant,
+        appointment_id=appointment_id
+    )
 
     if not appointment:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Appointment not found"
         )
-
-    appointment.status = AppointmentStatus.CONFIRMED
-    appointment.confirmed_at = datetime.utcnow()
-
-    db.commit()
-    db.refresh(appointment)
 
     return appointment
 
@@ -243,22 +215,17 @@ async def complete_appointment(
     """
     Mark appointment as completed (staff/admin/owner)
     """
-    appointment = db.query(Appointment).filter(
-        Appointment.id == appointment_id,
-        Appointment.tenant_id == current_tenant.id
-    ).first()
+    appointment = AppointmentService.complete_appointment(
+        db=db,
+        tenant=current_tenant,
+        appointment_id=appointment_id
+    )
 
     if not appointment:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Appointment not found"
         )
-
-    appointment.status = AppointmentStatus.COMPLETED
-    appointment.completed_at = datetime.utcnow()
-
-    db.commit()
-    db.refresh(appointment)
 
     return appointment
 

@@ -77,8 +77,13 @@ class SchedulingService:
         if overlapping:
             return False
 
-        # TODO: Check staff schedule (working hours, breaks)
-        # For now, assume staff is available during business hours (9am-5pm)
+        # Check staff schedule (working hours, breaks)
+        if staff.schedule:
+            is_in_schedule, _ = SchedulingService._is_time_in_schedule(
+                start_time, end_time, staff.schedule
+            )
+            if not is_in_schedule:
+                return False
 
         return True
 
@@ -137,6 +142,14 @@ class SchedulingService:
         # Check if resource has capacity
         if overlapping_count >= resource.capacity:
             return False
+
+        # Check resource schedule (working hours)
+        if resource.schedule:
+            is_in_schedule, _ = SchedulingService._is_time_in_schedule(
+                start_time, end_time, resource.schedule
+            )
+            if not is_in_schedule:
+                return False
 
         return True
 
@@ -374,3 +387,71 @@ class SchedulingService:
         """
         total_duration = service.duration_minutes + service.setup_buffer_minutes + service.cleanup_buffer_minutes
         return start_time + timedelta(minutes=total_duration)
+
+    @staticmethod
+    def _is_time_in_schedule(
+        start_time: datetime,
+        end_time: datetime,
+        schedule: dict
+    ) -> Tuple[bool, Optional[str]]:
+        """
+        Check if a time range falls within a schedule
+
+        Schedule format:
+        {
+            "monday": {"start": "09:00", "end": "17:00", "breaks": [{"start": "12:00", "end": "13:00"}]},
+            "tuesday": {"start": "09:00", "end": "17:00"},
+            ...
+        }
+
+        Args:
+            start_time: Start datetime
+            end_time: End datetime
+            schedule: Schedule dictionary
+
+        Returns:
+            Tuple of (is_in_schedule, reason_if_not)
+        """
+        # Get day of week (lowercase)
+        day_name = start_time.strftime("%A").lower()
+
+        if day_name not in schedule:
+            return False, f"Not available on {day_name.capitalize()}"
+
+        day_schedule = schedule[day_name]
+
+        # Check if day is marked as unavailable
+        if day_schedule is None or day_schedule.get("available") is False:
+            return False, f"Not available on {day_name.capitalize()}"
+
+        # Parse schedule times
+        try:
+            schedule_start = datetime.strptime(day_schedule["start"], "%H:%M").time()
+            schedule_end = datetime.strptime(day_schedule["end"], "%H:%M").time()
+        except (KeyError, ValueError):
+            return False, "Invalid schedule format"
+
+        # Check if appointment falls within working hours
+        appt_start_time = start_time.time()
+        appt_end_time = end_time.time()
+
+        if appt_start_time < schedule_start:
+            return False, f"Start time is before working hours ({day_schedule['start']})"
+
+        if appt_end_time > schedule_end:
+            return False, f"End time is after working hours ({day_schedule['end']})"
+
+        # Check if appointment overlaps with breaks
+        if "breaks" in day_schedule and day_schedule["breaks"]:
+            for break_period in day_schedule["breaks"]:
+                try:
+                    break_start = datetime.strptime(break_period["start"], "%H:%M").time()
+                    break_end = datetime.strptime(break_period["end"], "%H:%M").time()
+
+                    # Check for overlap with break
+                    if not (appt_end_time <= break_start or appt_start_time >= break_end):
+                        return False, f"Overlaps with break time ({break_period['start']}-{break_period['end']})"
+                except (KeyError, ValueError):
+                    continue
+
+        return True, None

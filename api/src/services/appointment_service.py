@@ -242,11 +242,3 @@ class AppointmentService:
         db.refresh(appointment)
 
         return appointment
-
-    # TODO Sprint 2: Add these methods
-    # @staticmethod
-    # def check_availability(db, tenant, start_time, end_time, staff_id, resource_id): pass
-    # @staticmethod
-    # def get_available_time_slots(db, tenant, date, service_id): pass
-    # @staticmethod
-    # def prevent_double_booking(db, tenant, start_time, end_time, staff_id): pass
