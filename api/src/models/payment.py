@@ -19,6 +19,8 @@ class PaymentStatus(str, enum.Enum):
     CANCELLED = "cancelled"
     REFUNDED = "refunded"
     PARTIALLY_REFUNDED = "partially_refunded"
+    WAIVED = "waived"  # Sprint 4: For waived no-show fees
+    COMPLETED = "completed"  # Sprint 4: For completed payments
 
 
 class PaymentType(str, enum.Enum):
