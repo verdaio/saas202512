@@ -108,7 +108,7 @@ class Payment(Base):
     tenant = relationship("Tenant", backref="payments")
     owner = relationship("Owner", backref="payments")
     appointment = relationship("Appointment", backref="payments")
-    package = relationship("Package", backref="payment", uselist=False)
+    package = relationship("Package", foreign_keys="[Payment.package_id]", backref="payment", uselist=False)
 
     def __repr__(self):
         return f"<Payment(id={self.id}, type={self.type}, amount=${self.amount/100:.2f}, status={self.status})>"

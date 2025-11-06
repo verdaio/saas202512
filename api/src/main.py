@@ -65,7 +65,7 @@ async def api_root():
 
 
 # Import and include routers
-from .api import auth, staff, owners, pets, services, resources, appointments, packages, payments, vaccination_records, webhooks, schedule
+from .api import auth, staff, owners, pets, services, resources, appointments, packages, payments, vaccination_records, webhooks, schedule, stats
 
 # Authentication
 app.include_router(auth.router, prefix=f"{settings.API_V1_STR}/auth", tags=["auth"])
@@ -90,6 +90,9 @@ app.include_router(appointments.router, prefix=f"{settings.API_V1_STR}/appointme
 
 # Scheduling (Sprint 2)
 app.include_router(schedule.router, prefix=f"{settings.API_V1_STR}/schedule", tags=["schedule"])
+
+# Stats
+app.include_router(stats.router, prefix=f"{settings.API_V1_STR}/stats", tags=["stats"])
 
 # Packages (punch cards, memberships)
 app.include_router(packages.router, prefix=f"{settings.API_V1_STR}/packages", tags=["packages"])

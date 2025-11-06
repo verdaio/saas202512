@@ -1,7 +1,7 @@
 """
 FastAPI dependencies for authentication and authorization
 """
-from fastapi import Depends, HTTPException, status, Header
+from fastapi import Depends, HTTPException, status, Header, Request
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.orm import Session
 from typing import Optional
@@ -76,7 +76,7 @@ async def get_current_tenant(
     db: Session = Depends(get_db)
 ) -> Tenant:
     """
-    Get current user's tenant
+    Get current user's tenant (requires authentication)
     """
     tenant = db.query(Tenant).filter(
         Tenant.id == current_user.tenant_id,
@@ -87,6 +87,37 @@ async def get_current_tenant(
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Tenant not found or inactive"
+        )
+
+    return tenant
+
+
+async def get_public_tenant(
+    request: Request,
+    db: Session = Depends(get_db)
+) -> Tenant:
+    """
+    Get tenant from request state (set by middleware)
+    Does not require authentication - for public endpoints like booking widget
+    """
+    tenant_subdomain = getattr(request.state, "tenant_id", None)
+
+    if not tenant_subdomain:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Tenant context not found"
+        )
+
+    # Look up tenant by subdomain
+    tenant = db.query(Tenant).filter(
+        Tenant.subdomain == tenant_subdomain,
+        Tenant.is_active == True
+    ).first()
+
+    if not tenant:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Tenant not found: {tenant_subdomain}"
         )
 
     return tenant

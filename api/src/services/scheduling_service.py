@@ -240,6 +240,12 @@ class SchedulingService:
         while current_time + timedelta(minutes=total_duration) <= end_datetime:
             slot_end = current_time + timedelta(minutes=total_duration)
 
+            # Skip past time slots for today
+            # Use datetime.now() for local time comparison since slots are in local time
+            if current_time <= datetime.now():
+                current_time += timedelta(minutes=30)
+                continue
+
             # Get available staff for this slot
             available_staff = []
 
@@ -306,7 +312,8 @@ class SchedulingService:
             return False, "Service is not available for booking"
 
         # 2. Validate time slot is in the future
-        if start_time <= datetime.utcnow():
+        # Use local time comparison since appointment times are in local time
+        if start_time <= datetime.now():
             return False, "Cannot book appointments in the past"
 
         # 3. Validate duration matches service

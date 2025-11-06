@@ -9,7 +9,7 @@ from uuid import UUID
 import uuid
 
 from ..db.base import get_db
-from ..core.dependencies import get_current_user, get_current_tenant, require_staff_or_admin
+from ..core.dependencies import get_current_user, get_current_tenant, get_public_tenant, require_staff_or_admin
 from ..models.user import User
 from ..models.tenant import Tenant
 from ..models.appointment import Appointment, AppointmentStatus
@@ -26,7 +26,7 @@ router = APIRouter()
 async def create_appointment(
     appointment_data: AppointmentCreate,
     db: Session = Depends(get_db),
-    current_tenant: Tenant = Depends(get_current_tenant)
+    current_tenant: Tenant = Depends(get_public_tenant)
 ):
     """
     Create new appointment (public endpoint for booking widget)
@@ -205,7 +205,65 @@ async def confirm_appointment(
     return appointment
 
 
-@router.post("/{appointment_id}/complete", response_model=AppointmentResponse)
+@router.patch("/{appointment_id}/check-in", response_model=AppointmentResponse)
+async def check_in_appointment(
+    appointment_id: UUID,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_staff_or_admin),
+    current_tenant: Tenant = Depends(get_current_tenant)
+):
+    """
+    Check in appointment (staff/admin/owner)
+    """
+    appointment = db.query(Appointment).filter(
+        Appointment.id == appointment_id,
+        Appointment.tenant_id == current_tenant.id
+    ).first()
+
+    if not appointment:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Appointment not found"
+        )
+
+    appointment.status = AppointmentStatus.CHECKED_IN
+    appointment.updated_at = datetime.now()
+    db.commit()
+    db.refresh(appointment)
+
+    return appointment
+
+
+@router.patch("/{appointment_id}/start", response_model=AppointmentResponse)
+async def start_appointment(
+    appointment_id: UUID,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_staff_or_admin),
+    current_tenant: Tenant = Depends(get_current_tenant)
+):
+    """
+    Start appointment (staff/admin/owner)
+    """
+    appointment = db.query(Appointment).filter(
+        Appointment.id == appointment_id,
+        Appointment.tenant_id == current_tenant.id
+    ).first()
+
+    if not appointment:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Appointment not found"
+        )
+
+    appointment.status = AppointmentStatus.IN_PROGRESS
+    appointment.updated_at = datetime.now()
+    db.commit()
+    db.refresh(appointment)
+
+    return appointment
+
+
+@router.patch("/{appointment_id}/complete", response_model=AppointmentResponse)
 async def complete_appointment(
     appointment_id: UUID,
     db: Session = Depends(get_db),
@@ -230,13 +288,113 @@ async def complete_appointment(
     return appointment
 
 
+@router.patch("/{appointment_id}/no-show", response_model=AppointmentResponse)
+async def mark_no_show(
+    appointment_id: UUID,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_staff_or_admin),
+    current_tenant: Tenant = Depends(get_current_tenant)
+):
+    """
+    Mark appointment as no-show (staff/admin/owner)
+    """
+    appointment = db.query(Appointment).filter(
+        Appointment.id == appointment_id,
+        Appointment.tenant_id == current_tenant.id
+    ).first()
+
+    if not appointment:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Appointment not found"
+        )
+
+    appointment.status = AppointmentStatus.NO_SHOW
+    appointment.updated_at = datetime.now()
+    db.commit()
+    db.refresh(appointment)
+
+    return appointment
+
+
+@router.patch("/{appointment_id}/cancel", response_model=AppointmentResponse)
+async def cancel_appointment_patch(
+    appointment_id: UUID,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_staff_or_admin),
+    current_tenant: Tenant = Depends(get_current_tenant)
+):
+    """
+    Cancel appointment (staff endpoint)
+    """
+    try:
+        appointment = AppointmentService.cancel_appointment(
+            db=db,
+            tenant=current_tenant,
+            appointment_id=appointment_id
+        )
+
+        if not appointment:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Appointment not found"
+            )
+
+        return appointment
+    except ValueError as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(e)
+        )
+
+
+@router.patch("/{appointment_id}/reschedule", response_model=AppointmentResponse)
+async def reschedule_appointment(
+    appointment_id: UUID,
+    reschedule_data: dict,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_staff_or_admin),
+    current_tenant: Tenant = Depends(get_current_tenant)
+):
+    """
+    Reschedule appointment (staff endpoint)
+    """
+    appointment = db.query(Appointment).filter(
+        Appointment.id == appointment_id,
+        Appointment.tenant_id == current_tenant.id
+    ).first()
+
+    if not appointment:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Appointment not found"
+        )
+
+    # Update scheduled times
+    if "scheduled_start" in reschedule_data:
+        appointment.scheduled_start = datetime.fromisoformat(reschedule_data["scheduled_start"])
+
+    if "scheduled_end" in reschedule_data:
+        appointment.scheduled_end = datetime.fromisoformat(reschedule_data["scheduled_end"])
+
+    # Update staff if provided
+    if "staff_id" in reschedule_data and reschedule_data["staff_id"]:
+        appointment.staff_id = UUID(reschedule_data["staff_id"])
+
+    appointment.updated_at = datetime.now()
+    db.commit()
+    db.refresh(appointment)
+
+    return appointment
+
+
 @router.get("/availability/slots", response_model=List[dict])
 async def get_available_slots(
     service_id: UUID = Query(..., description="Service ID"),
     date: date = Query(..., description="Date to check"),
     staff_id: UUID = Query(None, description="Optional staff member ID"),
     db: Session = Depends(get_db),
-    current_tenant: Tenant = Depends(get_current_tenant)
+    current_tenant: Tenant = Depends(get_public_tenant)
 ):
     """
     Get available time slots for a service on a given date (public endpoint for booking widget)
@@ -258,7 +416,7 @@ async def get_next_available_slot(
     start_date: date = Query(..., description="Start searching from this date"),
     staff_id: UUID = Query(None, description="Optional staff member ID"),
     db: Session = Depends(get_db),
-    current_tenant: Tenant = Depends(get_current_tenant)
+    current_tenant: Tenant = Depends(get_public_tenant)
 ):
     """
     Find the next available time slot for a service (public endpoint for booking widget)

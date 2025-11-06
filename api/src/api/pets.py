@@ -8,7 +8,7 @@ from uuid import UUID
 import uuid
 
 from ..db.base import get_db
-from ..core.dependencies import get_current_user, get_current_tenant, require_staff_or_admin
+from ..core.dependencies import get_current_user, get_current_tenant, get_public_tenant, require_staff_or_admin
 from ..models.user import User
 from ..models.tenant import Tenant
 from ..models.pet import Pet
@@ -22,11 +22,10 @@ router = APIRouter()
 async def create_pet(
     pet_data: PetCreate,
     db: Session = Depends(get_db),
-    current_user: User = Depends(require_staff_or_admin),
-    current_tenant: Tenant = Depends(get_current_tenant)
+    current_tenant: Tenant = Depends(get_public_tenant)
 ):
     """
-    Create new pet (staff/admin/owner)
+    Create new pet (public endpoint for booking widget)
     """
     # Verify owner exists and belongs to tenant
     owner = db.query(Owner).filter(

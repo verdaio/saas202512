@@ -8,7 +8,7 @@ from uuid import UUID
 import uuid
 
 from ..db.base import get_db
-from ..core.dependencies import get_current_user, get_current_tenant, require_owner
+from ..core.dependencies import get_current_user, get_current_tenant, get_public_tenant, require_owner
 from ..models.user import User
 from ..models.tenant import Tenant
 from ..models.service import Service
@@ -48,7 +48,7 @@ async def list_services(
     is_active: bool = None,
     is_bookable_online: bool = None,
     db: Session = Depends(get_db),
-    current_tenant: Tenant = Depends(get_current_tenant)
+    current_tenant: Tenant = Depends(get_public_tenant)
 ):
     """
     List services for current tenant (public endpoint for booking widget)
@@ -72,7 +72,7 @@ async def list_services(
 async def get_service(
     service_id: UUID,
     db: Session = Depends(get_db),
-    current_tenant: Tenant = Depends(get_current_tenant)
+    current_tenant: Tenant = Depends(get_public_tenant)
 ):
     """
     Get service by ID (public endpoint for booking widget)

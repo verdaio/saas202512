@@ -173,6 +173,34 @@ npx claude-code-templates@latest --command testing/generate-tests
 
 ---
 
+
+---
+
+## 🔒 Azure Security Baseline
+
+This project includes the **Azure Security Playbook v2.0** - a comprehensive zero-to-production security implementation.
+
+### Security Resources
+
+**📘 Core Documentation:**
+- `technical/azure-security-zero-to-prod-v2.md` - Complete security playbook (Days 0-9)
+- `azure-security-baseline-checklist.csv` - 151-task tracking checklist
+
+**🚨 Incident Response Runbooks:**
+- `azure-security-runbooks/` - 5 detailed incident response procedures
+  - credential-leak-response.md (MTTR: 15 min)
+  - exposed-storage-response.md (MTTR: 30 min)
+  - suspicious-consent-response.md (MTTR: 20 min)
+  - ransomware-response.md (MTTR: Immediate)
+  - privilege-escalation-response.md (MTTR: 30 min)
+
+**🏗️ Security Baseline IaC:**
+- `infrastructure/azure-security-bicep/` - Production-ready Bicep modules (Recommended)
+  - Deploy: `az deployment sub create --template-file azure-security-bicep/main.bicep`
+- `infrastructure/azure-security-terraform/` - Terraform reference modules
+
+**Cost:** ~$5,000-6,000/month (production) | ~$1,000-1,500/month (dev/test)
+
 ## 🤖 Virtual Agents
 
 For detailed virtual agent workflows, triggers, and delegation patterns, see:

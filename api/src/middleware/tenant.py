@@ -59,10 +59,14 @@ class TenantMiddleware:
             subdomain = match.group(1)
 
             # Skip common non-tenant subdomains
-            if subdomain in ["www", "api", "admin", "localhost"]:
+            if subdomain in ["www", "api", "admin"]:
                 return None
 
             return subdomain
+
+        # Default to "demo" tenant for localhost (development/testing)
+        if "localhost" in host or "127.0.0.1" in host:
+            return "demo"
 
         return None
 

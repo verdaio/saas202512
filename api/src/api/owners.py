@@ -8,7 +8,7 @@ from uuid import UUID
 import uuid
 
 from ..db.base import get_db
-from ..core.dependencies import get_current_user, get_current_tenant, require_staff_or_admin
+from ..core.dependencies import get_current_user, get_current_tenant, get_public_tenant, require_staff_or_admin
 from ..models.user import User
 from ..models.tenant import Tenant
 from ..models.owner import Owner
@@ -21,11 +21,10 @@ router = APIRouter()
 async def create_owner(
     owner_data: OwnerCreate,
     db: Session = Depends(get_db),
-    current_user: User = Depends(require_staff_or_admin),
-    current_tenant: Tenant = Depends(get_current_tenant)
+    current_tenant: Tenant = Depends(get_public_tenant)
 ):
     """
-    Create new pet owner (staff/admin/owner)
+    Create new pet owner (public endpoint for booking widget)
     """
     # Check if email already exists for this tenant
     existing = db.query(Owner).filter(
@@ -59,11 +58,10 @@ async def list_owners(
     search: str = None,
     is_active: bool = None,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
-    current_tenant: Tenant = Depends(get_current_tenant)
+    current_tenant: Tenant = Depends(get_public_tenant)
 ):
     """
-    List all pet owners for current tenant
+    List all pet owners for current tenant (public endpoint for booking widget search)
     """
     query = db.query(Owner).filter(Owner.tenant_id == current_tenant.id)
 
